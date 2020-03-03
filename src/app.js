@@ -132,13 +132,15 @@
       return true;
     } catch (e) {
       console.error(e);
+      output(undefined);
       alert("failed - see console");
       return false;
     }
   }
 
   function output(val) {
-    document.getElementById("json-output").innerText = JSON.stringify(val, null, 2);
+    let el = document.getElementById("json-output");
+    el.innerText = val ? JSON.stringify(val, null, 2) : "";
   }
 
   init();

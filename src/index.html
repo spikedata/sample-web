@@ -4,8 +4,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Dropzone</title>
-
     <link rel="stylesheet" href="dropArea.css" />
+    <style>
+      #output {
+        width: 480px;
+        margin: 30px auto;
+      }
+    </style>
   </head>
 
   <body>
@@ -19,7 +24,7 @@
         <label class="button" for="fileElem">Choose pdfs</label>
       </form>
     </div>
-    <div>
+    <div id="output">
       <pre id="json-output"></pre>
     </div>
 
