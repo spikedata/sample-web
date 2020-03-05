@@ -2,10 +2,12 @@
   // TODO: inputs
   const APIKEY = "00000000-0000-4000-a000-000000000001";
   const USERKEY = "00000000-0000-4000-a000-000000000002";
+  const _TEST = false;
+  const pdf = _TEST ? pdfTest : pdfProd;
 
   // wrapper to call SpikeApi
   let toggle = true;
-  async function pdf(buffer, pass) {
+  async function pdfTest(fileName, buffer) {
     toggle = !toggle;
     if (toggle) {
       throw new Error("problem");
@@ -54,16 +56,16 @@
     };
   }
 
-  async function pdf2(buffer, pass) {
+  async function pdfProd(fileName, buffer) {
     try {
       // request
       console.log("requesting /pdf ...");
-      let spikeResponse = await window.SpikeApi.pdf(APIKEY, USERKEY, buffer, pass);
+      let spikeResponse = await window.SpikeApi.pdf(APIKEY, USERKEY, fileName, undefined, buffer);
 
       // process response
       if (spikeResponse.type === window.SpikeApi.enums.TYPES.SUCCESS) {
-        console.log("JSON", JSON.stringify(spikeResponse, null, 2));
         console.log("SUCCESS");
+        return spikeResponse;
       } else {
         console.error(
           "ERROR:",
@@ -82,7 +84,7 @@
       } else if (!e.response) {
         // 2. net connection error (e.g. down, timeout) or > axios maxBodyLength limit
         // e : AxiosResponse
-        console.error("EXCEPTION: net connection error:", e.code || e.message);
+        console.error("EXCEPTION: net connection error:", e);
       } else {
         // 3. http status error (e.g. 500 internal server error, 413 too big)
         // e : AxiosResponse
@@ -127,7 +129,7 @@
   async function uploadPdf(i, file, base64Txt) {
     console.log(`${i} ${file.name}`);
     try {
-      let res = await pdf(base64Txt);
+      let res = await pdf(file.name, base64Txt);
       output(res);
       return true;
     } catch (e) {
