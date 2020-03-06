@@ -10,9 +10,9 @@ const _pass = undefined; // change this if you have a password protected pdf
 
   //#region SpikeApi call + mock
 
-  const pdf = _MOCK ? pdfMock : pdfProd;
+  const pdf = _MOCK ? pdfMock : pdfDirect;
 
-  async function pdfProd(fileName, pass, buffer) {
+  async function pdfDirect(fileName, pass, buffer) {
     try {
       // request
       console.log("requesting /pdf ...");
@@ -26,10 +26,12 @@ const _pass = undefined; // change this if you have a password protected pdf
       }
     } catch (e) {
       // There are 3 types of exception for you to handle:
-      // 1. invalid inputs
+      // 1. invalid inputs = pdf too large or other input validation error
       // 2. net connection error (e.g. down, timeout) or > axios maxBodyLength limit
       // 3. http status error (e.g. 500 internal server error, 413 too big)
-      if (e instanceof SpikeApi.InputValidationError) {
+      if (e instanceof SpikeApi.PdfTooLargeError) {
+        return `EXCEPTION: the pdf is too large`;
+      } else if (e instanceof SpikeApi.InputValidationError) {
         // 1. invalid inputs
         return `EXCEPTION: invalid inputs:\n ${e.validationErrors.join("\n ")}`;
       } else if (!e.response) {

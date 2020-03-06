@@ -9,7 +9,7 @@
 var SpikeApiProxy = {
   pdf: async function(file, pass, buffer) {
     // inputs
-    var inputs = SpikeApi.getShape("client-gw/pdf").create(file, pass, buffer); // throws SpikeApi.InputValidationError
+    var inputs = SpikeApi.getShape("client-gw/pdf").create(file, pass, buffer); // throws SpikeApi.InputValidationError||PdfTooLargeError
 
     // request to proxy (not Spike API directly)
     var MAX = 6 * 1024 * 1024;

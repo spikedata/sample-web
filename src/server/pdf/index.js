@@ -28,10 +28,13 @@ async function pdfProxy(APIKEY, USERKEY, fileName, pass, buffer) {
     return spikeResponse;
   } catch (e) {
     // There are 3 types of exception for you to handle:
-    // 1. invalid inputs
+    // 1. invalid inputs = pdf too large or other input validation error
     // 2. server -> spike : net connection error or http status error
     // 3. ux -> server : net connection or http status error
-    if (e instanceof SpikeApi.InputValidationError) {
+    if (e instanceof SpikeApi.PdfTooLargeError) {
+      console.error(`EXCEPTION: the pdf is too large`);
+      return e;
+    } else if (e instanceof SpikeApi.InputValidationError) {
       // 1. invalid inputs
       console.error("EXCEPTION: invalid inputs:\n ", e.validationErrors.join("\n "));
       return e;

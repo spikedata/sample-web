@@ -8,9 +8,9 @@ const _pass = undefined; // change this if you have a password protected pdf
 
   //#region SpikeApiProxy call + mock
 
-  const pdf = _MOCK ? pdfMock : pdfProd;
+  const pdf = _MOCK ? pdfMock : pdfProxy;
 
-  async function pdfProd(fileName, pass, buffer) {
+  async function pdfProxy(fileName, pass, buffer) {
     try {
       // request
       console.log("requesting /pdf ...");
@@ -26,10 +26,12 @@ const _pass = undefined; // change this if you have a password protected pdf
       }
     } catch (e) {
       // There are 3 types of exception for you to handle:
-      // 1. invalid inputs
+      // 1. invalid inputs = pdf too large or other input validation error
       // 2. server -> spike : net connection error or http status error
       // 3. ux -> server : net connection or http status error
-      if (e instanceof SpikeApi.InputValidationError || e.validationErrors) {
+      if (e instanceof SpikeApi.PdfTooLargeError) {
+        return `EXCEPTION: the pdf is too large`;
+      } else if (e instanceof SpikeApi.InputValidationError || e.validationErrors) {
         // 1. invalid inputs
         return `EXCEPTION: invalid inputs:\n ${e.validationErrors.join("\n ")}`;
       } else if (e.serverToSpikeError) {
