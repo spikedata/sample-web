@@ -1,8 +1,5 @@
 const SpikeApi = require("@spikedata/api");
-
-// TODO: keys
-const APIKEY = "00000000-0000-4000-a000-000000000001";
-const USERKEY = "00000000-0000-4000-a000-000000000002";
+const { APIKEY, USERKEY } = require("../config");
 
 module.exports = async (req, res) => {
   let { file, pass, buffer } = req.body; // body = SpikeApi.shape["client-gw/pdf"]
