@@ -6,9 +6,14 @@
   "author": "ilan@spikedata.co.za",
   "license": "SPIKE",
   "scripts": {
+    "start": "node src/server/server.js",
     "fix-format": "npm-run-all fix format",
     "fix": "eslint .",
     "format": "prettier --write 'src/**/*.{js,jsm,jsx,json,css,md}'"
+  },
+  "dependencies": {
+    "@spikedata/api": "1.0.0",
+    "express": "4.17.1"
   },
   "devDependencies": {
     "eslint": "6.8.0",

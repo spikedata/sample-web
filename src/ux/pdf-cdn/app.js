@@ -1,13 +1,49 @@
+/*global SpikeApi, DropArea*/
+
 (() => {
   // TODO: inputs
   const APIKEY = "00000000-0000-4000-a000-000000000001";
   const USERKEY = "00000000-0000-4000-a000-000000000002";
-  const _TEST = false;
-  const pdf = _TEST ? pdfTest : pdfProd;
+  const _MOCK = false;
 
-  // wrapper to call SpikeApi
+  //#region SpikeApi call + mock
+
+  const pdf = _MOCK ? pdfMock : pdfProd;
+
+  async function pdfProd(fileName, buffer) {
+    try {
+      // request
+      console.log("requesting /pdf ...");
+      let spikeResponse = await SpikeApi.pdf(APIKEY, USERKEY, fileName, undefined, buffer);
+
+      // process response
+      if (spikeResponse.type === SpikeApi.enums.TYPES.SUCCESS) {
+        return spikeResponse;
+      } else {
+        return `ERROR: ${SpikeApi.enums.TYPES.toString(spikeResponse.type)}: ${spikeResponse.code}`;
+      }
+    } catch (e) {
+      // There are 3 types of exception for you to handle:
+      // 1. invalid inputs
+      // 2. net connection error (e.g. down, timeout) or > axios maxBodyLength limit
+      // 3. http status error (e.g. 500 internal server error, 413 too big)
+      if (e instanceof SpikeApi.InputValidationError) {
+        // 1. invalid inputs
+        return `EXCEPTION: invalid inputs:\n ${e.validationErrors.join("\n ")}`;
+      } else if (!e.response) {
+        // 2. net connection error (e.g. down, timeout) or > axios maxBodyLength limit
+        // e : AxiosResponse
+        return `EXCEPTION: net connection error`;
+      } else {
+        // 3. http status error (e.g. 500 internal server error, 413 too big)
+        // e : AxiosResponse
+        return `EXCEPTION: http status error: ${e.response.status} ${e.response.statusText}`;
+      }
+    }
+  }
+
   let toggle = true;
-  async function pdfTest(fileName, buffer) {
+  async function pdfMock(/*fileName, buffer*/) {
     toggle = !toggle;
     if (toggle) {
       throw new Error("problem");
@@ -56,42 +92,7 @@
     };
   }
 
-  async function pdfProd(fileName, buffer) {
-    try {
-      // request
-      console.log("requesting /pdf ...");
-      let spikeResponse = await window.SpikeApi.pdf(APIKEY, USERKEY, fileName, undefined, buffer);
-
-      // process response
-      if (spikeResponse.type === window.SpikeApi.enums.TYPES.SUCCESS) {
-        console.log("SUCCESS");
-        return spikeResponse;
-      } else {
-        console.error(
-          "ERROR:",
-          window.SpikeApi.enums.TYPES.toString(spikeResponse.type) + ":" + spikeResponse.code
-        );
-      }
-    } catch (e) {
-      // There are 3 types of exception for you to handle:
-      // 1. invalid inputs
-      // 2. net connection error (e.g. down, timeout) or > axios maxBodyLength limit
-      // 3. http status error (e.g. 500 internal server error, 413 too big)
-      if (e instanceof window.SpikeApi.InputValidationError) {
-        // 1. invalid inputs
-        console.error("EXCEPTION: invalid inputs:\n ", e.validationErrors.join("\n "));
-        return;
-      } else if (!e.response) {
-        // 2. net connection error (e.g. down, timeout) or > axios maxBodyLength limit
-        // e : AxiosResponse
-        console.error("EXCEPTION: net connection error:", e);
-      } else {
-        // 3. http status error (e.g. 500 internal server error, 413 too big)
-        // e : AxiosResponse
-        console.error("EXCEPTION: http status error:", e.response.status, e.response.statusText);
-      }
-    }
-  }
+  //#endregion
 
   function init() {
     new DropArea("drop-area", onDrop);
@@ -119,7 +120,7 @@
       let reader = new FileReader();
       reader.onloadend = async function(event) {
         let base64Txt = event.target.result.replace(/^data:application\/pdf;base64,/, "");
-        let ok = await uploadPdf(i, file, base64Txt);
+        await uploadPdf(i, file, base64Txt);
         resolve(); // don't bother with reject() - errors already handled by uploadPdf()
       };
       reader.readAsDataURL(file);
@@ -128,16 +129,8 @@
 
   async function uploadPdf(i, file, base64Txt) {
     console.log(`${i} ${file.name}`);
-    try {
-      let res = await pdf(file.name, base64Txt);
-      output(res);
-      return true;
-    } catch (e) {
-      console.error(e);
-      output(undefined);
-      alert("failed - see console");
-      return false;
-    }
+    let res = await pdf(file.name, base64Txt);
+    output(res);
   }
 
   function output(val) {
