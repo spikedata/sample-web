@@ -16,7 +16,7 @@ async function pdfProxy(APIKEY, USERKEY, fileName, pass, buffer) {
     console.log("requesting /pdf ...");
     let spikeResponse = await SpikeApi.pdf(APIKEY, USERKEY, fileName, pass, buffer);
 
-    // process response
+    // response
     if (spikeResponse.type === SpikeApi.enums.TYPES.SUCCESS) {
       console.log("SUCCESS");
     } else {
@@ -27,32 +27,23 @@ async function pdfProxy(APIKEY, USERKEY, fileName, pass, buffer) {
     }
     return spikeResponse;
   } catch (e) {
-    // There are 3 types of exception for you to handle:
-    // 1. invalid inputs = pdf too large or other input validation error
-    // 2. server -> spike : net connection error or http status error
-    // 3. ux -> server : net connection or http status error
     if (e instanceof SpikeApi.PdfTooLargeError) {
       console.error(`EXCEPTION: the pdf is too large`);
       return e;
     } else if (e instanceof SpikeApi.InputValidationError) {
-      // 1. invalid inputs
       console.error("EXCEPTION: invalid inputs:\n ", e.validationErrors.join("\n "));
       return e;
-    } else if (!e.response) {
-      // 2. net connection error (e.g. down, timeout) or > axios maxBodyLength limit
-      // e : AxiosResponse
-      delete e.config; // make sure spike-api keys are not exposed to the frontend
-      console.error("EXCEPTION: ux -> server : net connection error:", e);
-      return { serverToSpikeError: e };
     } else {
-      // 3. http status error (e.g. 500 internal server error, 413 too big)
-      // e : AxiosResponse
-      console.error(
-        "EXCEPTION: ux -> server : http status error:",
-        e.response.status,
-        e.response.statusText
-      );
-      delete e.config; // make sure spike-api keys are not exposed to the frontend
+      if (!e.response) {
+        console.error("EXCEPTION: ux -> server : net connection error:", e);
+      } else {
+        console.error(
+          "EXCEPTION: ux -> server : http status error:",
+          e.response.status,
+          e.response.statusText
+        );
+      }
+      delete e.config; // make sure spike-api keys from the axios request are not exposed to the frontend
       return { serverToSpikeError: e };
     }
   }

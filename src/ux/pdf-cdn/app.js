@@ -25,21 +25,16 @@ const _pass = undefined; // change this if you have a password protected pdf
         return `ERROR: ${SpikeApi.enums.TYPES.toString(spikeResponse.type)}: ${spikeResponse.code}`;
       }
     } catch (e) {
-      // There are 3 types of exception for you to handle:
-      // 1. invalid inputs = pdf too large or other input validation error
-      // 2. net connection error (e.g. down, timeout) or > axios maxBodyLength limit
-      // 3. http status error (e.g. 500 internal server error, 413 too big)
       if (e instanceof SpikeApi.PdfTooLargeError) {
         return `EXCEPTION: the pdf is too large`;
       } else if (e instanceof SpikeApi.InputValidationError) {
-        // 1. invalid inputs
         return `EXCEPTION: invalid inputs:\n ${e.validationErrors.join("\n ")}`;
       } else if (!e.response) {
-        // 2. net connection error (e.g. down, timeout) or > axios maxBodyLength limit
+        // net connection error (e.g. down, timeout) or > axios maxBodyLength limit
         // e : AxiosResponse
         return `EXCEPTION: net connection error`;
       } else {
-        // 3. http status error (e.g. 500 internal server error, 413 too big)
+        // http status error (e.g. 500 internal server error, 413 too big)
         // e : AxiosResponse
         return `EXCEPTION: http status error: ${e.response.status} ${e.response.statusText}`;
       }
