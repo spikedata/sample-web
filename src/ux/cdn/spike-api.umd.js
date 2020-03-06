@@ -1,5 +1,8 @@
-var SpikeApi = (function (fs, path) {
-	'use strict';
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('fs'), require('path')) :
+	typeof define === 'function' && define.amd ? define(['fs', 'path'], factory) :
+	(global = global || self, global.SpikeApi = factory(global.null, global.null));
+}(this, (function (fs, path) { 'use strict';
 
 	fs = fs && fs.hasOwnProperty('default') ? fs['default'] : fs;
 	path = path && path.hasOwnProperty('default') ? path['default'] : path;
@@ -16327,5 +16330,5 @@ var SpikeApi = (function (fs, path) {
 
 	return module;
 
-}(null, null));
-//# sourceMappingURL=spike-api.js.map
+})));
+//# sourceMappingURL=spike-api.umd.js.map
