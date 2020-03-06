@@ -20,14 +20,9 @@ const _pass = undefined; // change this if you have a password protected pdf
       if (proxyResponse.serverToSpikeError) {
         throw proxyResponse;
       } else if (proxyResponse.type === SpikeApi.enums.TYPES.SUCCESS) {
-        console.log("SUCCESS");
         return proxyResponse;
       } else {
-        console.error(
-          "ERROR:",
-          SpikeApi.enums.TYPES.toString(proxyResponse.type) + ":" + proxyResponse.code
-        );
-        return proxyResponse;
+        return `ERROR: ${SpikeApi.enums.TYPES.toString(proxyResponse.type)}: ${proxyResponse.code}`;
       }
     } catch (e) {
       // There are 3 types of exception for you to handle:
@@ -36,33 +31,18 @@ const _pass = undefined; // change this if you have a password protected pdf
       // 3. ux -> server : net connection or http status error
       if (e instanceof SpikeApi.InputValidationError || e.validationErrors) {
         // 1. invalid inputs
-        console.error("EXCEPTION: invalid inputs:\n ", e.validationErrors.join("\n "));
-        return;
+        return `EXCEPTION: invalid inputs:\n ${e.validationErrors.join("\n ")}`;
       } else if (e.serverToSpikeError) {
-        if (!e.serverToSpikeError.response) {
-          // 2. net connection error (e.g. down, timeout) or > axios maxBodyLength limit
-          console.error("EXCEPTION: server -> spike : net connection error:", e);
-        } else {
-          // 3. http status error (e.g. 500 internal server error, 413 too big)
-          console.error(
-            "EXCEPTION: server -> spike : http status error:",
-            e.serverToSpikeError.response.status,
-            e.serverToSpikeError.response.statusText
-          );
-        }
+        return `EXCEPTION: server -> spike: connection error : ${e.serverToSpikeError.message}`;
       } else {
         if (!e.response) {
           // 2. net connection error (e.g. down, timeout) or > axios maxBodyLength limit
           // e : AxiosResponse
-          console.error("EXCEPTION: ux -> server : net connection error:", e);
+          return `EXCEPTION: net connection error`;
         } else {
           // 3. http status error (e.g. 500 internal server error, 413 too big)
           // e : AxiosResponse
-          console.error(
-            "EXCEPTION: ux -> server : http status error:",
-            e.response.status,
-            e.response.statusText
-          );
+          return `EXCEPTION: http status error: ${e.response.status} ${e.response.statusText}`;
         }
       }
     }
@@ -155,16 +135,8 @@ const _pass = undefined; // change this if you have a password protected pdf
 
   async function uploadPdf(i, file, base64Txt) {
     console.log(`${i} ${file.name}`);
-    try {
-      let res = await pdf(file.name, _pass, base64Txt);
-      output(res);
-      return true;
-    } catch (e) {
-      console.error(e);
-      output(undefined);
-      alert("failed - see console");
-      return false;
-    }
+    let res = await pdf(file.name, _pass, base64Txt);
+    output(res);
   }
 
   function output(val) {

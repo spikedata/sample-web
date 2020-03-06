@@ -1,5 +1,7 @@
 /*global SpikeApi, DropArea*/
 
+const _pass = undefined; // change this if you have a password protected pdf
+
 (() => {
   // TODO: inputs
   const APIKEY = "00000000-0000-4000-a000-000000000001";
@@ -10,11 +12,11 @@
 
   const pdf = _MOCK ? pdfMock : pdfProd;
 
-  async function pdfProd(fileName, buffer) {
+  async function pdfProd(fileName, pass, buffer) {
     try {
       // request
       console.log("requesting /pdf ...");
-      let spikeResponse = await SpikeApi.pdf(APIKEY, USERKEY, fileName, undefined, buffer);
+      let spikeResponse = await SpikeApi.pdf(APIKEY, USERKEY, fileName, pass, buffer);
 
       // process response
       if (spikeResponse.type === SpikeApi.enums.TYPES.SUCCESS) {
@@ -43,7 +45,7 @@
   }
 
   let toggle = true;
-  async function pdfMock(/*fileName, buffer*/) {
+  async function pdfMock(/*fileName, pass, buffer*/) {
     toggle = !toggle;
     if (toggle) {
       throw new Error("problem");
@@ -129,7 +131,7 @@
 
   async function uploadPdf(i, file, base64Txt) {
     console.log(`${i} ${file.name}`);
-    let res = await pdf(file.name, base64Txt);
+    let res = await pdf(file.name, _pass, base64Txt);
     output(res);
   }
 

@@ -12,11 +12,14 @@ var SpikeApiProxy = {
     var inputs = SpikeApi.getShape("client-gw/pdf").create(file, pass, buffer); // throws SpikeApi.InputValidationError
 
     // request to proxy (not Spike API directly)
+    var MAX = 6 * 1024 * 1024;
     var url = "/pdf";
-    let response = await axios.post(url, inputs, {
+    var response = await axios.post(url, inputs, {
       headers: {
         "Content-Type": "application/json",
       },
+      maxContentLength: MAX,
+      maxBodyLength: MAX,
     });
     if (response.status === 200) {
       return response.data;

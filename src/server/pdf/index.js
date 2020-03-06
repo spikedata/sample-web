@@ -38,6 +38,7 @@ async function pdfProxy(APIKEY, USERKEY, fileName, pass, buffer) {
     } else if (!e.response) {
       // 2. net connection error (e.g. down, timeout) or > axios maxBodyLength limit
       // e : AxiosResponse
+      delete e.config; // make sure spike-api keys are not exposed to the frontend
       console.error("EXCEPTION: ux -> server : net connection error:", e);
       return { serverToSpikeError: e };
     } else {
@@ -48,6 +49,7 @@ async function pdfProxy(APIKEY, USERKEY, fileName, pass, buffer) {
         e.response.status,
         e.response.statusText
       );
+      delete e.config; // make sure spike-api keys are not exposed to the frontend
       return { serverToSpikeError: e };
     }
   }
