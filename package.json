@@ -7,13 +7,13 @@
   "license": "SPIKE",
   "scripts": {
     "start": "node src/server/server.js",
-    "build:cdn": "cp ../api/dist/spike-api.umd.* ./src/ux/cdn",
+    "build:cdn": "./build-cdn.sh",
     "fix-format": "npm-run-all fix format",
     "fix": "eslint .",
     "format": "prettier --write 'src/**/*.{js,jsm,jsx,json,css,md}'"
   },
   "dependencies": {
-    "@spikedata/api": "1.0.1",
+    "@spikedata/api": "^1.0.2",
     "express": "4.17.1"
   },
   "devDependencies": {
