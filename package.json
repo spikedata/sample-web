@@ -1,5 +1,5 @@
 {
-  "name": "@spikedata/sample-webcdn-ui",
+  "name": "@spikedata/sample-web",
   "version": "1.0.0",
   "description": "Spike prototype app",
   "main": "app.js",
