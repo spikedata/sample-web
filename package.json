@@ -14,7 +14,7 @@
     "build:cdn": "./build-cdn.sh",
     "fix-format": "npm-run-all fix format",
     "fix": "eslint .",
-    "format": "prettier --write 'src/**/*.{js,jsm,jsx,json,css,md}'"
+    "format": "prettier --write 'src/**/*.{js,mjs,jsx,json,css,md}'"
   },
   "dependencies": {
     "@spikedata/api": "^1.0.2",
