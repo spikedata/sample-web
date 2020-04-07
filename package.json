@@ -1,6 +1,6 @@
 {
   "name": "@spikedata/sample-web",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Spike prototype app",
   "main": "app.js",
   "author": "ilan@spikedata.co.za",
