@@ -10,7 +10,7 @@ module.exports = async (req, res) => {
 async function pdfProxy(APIKEY, USERKEY, fileName, pass, buffer) {
   try {
     // request
-    console.log("requesting /pdf ...");
+    console.log(`requesting ${SpikeApi.config.url.pdf} ...`);
     let spikeResponse = await SpikeApi.pdf(APIKEY, USERKEY, fileName, pass, buffer);
 
     // response

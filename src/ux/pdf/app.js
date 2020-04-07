@@ -13,7 +13,7 @@ const _pass = undefined; // change this if you have a password protected pdf
   async function pdfProxy(fileName, pass, buffer) {
     try {
       // request
-      console.log("requesting /pdf ...");
+      console.log(`requesting ${location.origin}/pdf ...`);
       let proxyResponse = await SpikeApiProxy.pdf(fileName, pass, buffer);
 
       // process response

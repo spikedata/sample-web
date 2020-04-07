@@ -21,6 +21,268 @@
 		return n && n['default'] || n;
 	}
 
+	var accounts = {
+	  url: "/accounts",
+	  swagger: {
+	    tags: ["Web"],
+	    method: "post",
+	    summary: "List all accounts & balances held by user",
+	    operationId: "accounts"
+	  },
+	  shapes: {
+	    // NOTE: don't use "client-gw" || "gw-client" prefixes - breaks $refs in swagger
+	    inputs: "accounts",
+	    outputs: {
+	      success: ["accounts/success"],
+	      error: [// general & web
+	      "error/common/dev/authorization", "error/common/dev/invalid-inputs", "error/common/dev/sent-another-request-after-final-response", "error/common/exception", "error/common/session-in-use", "error/common/session-timed-out", "error/site/input-validation-failed", "error/site/internal", "error/site/site-change-detected", "error/site/site-unreachable", "error/site/site-unresponsive"]
+	    }
+	  }
+	};
+
+	var estatement = {
+	  url: "/estatement",
+	  swagger: {
+	    tags: ["Web"],
+	    method: "post",
+	    summary: "Branded statement (free to download)",
+	    operationId: "estatement"
+	  },
+	  shapes: {
+	    // NOTE: don't use "client-gw" || "gw-client" prefixes - breaks $refs in swagger
+	    inputs: "estatement",
+	    outputs: {
+	      success: "file/success",
+	      error: [// general & web
+	      "error/common/dev/authorization", "error/common/dev/function-not-supported-on-site", "error/common/dev/invalid-inputs", "error/common/dev/sent-another-request-after-final-response", "error/common/exception", "error/common/session-in-use", "error/common/session-timed-out", "error/site/bank-blocked", "error/site/captcha", "error/site/input-validation-failed", "error/site/internal", "error/site/no-statements-available", "error/site/site-change-detected", "error/site/site-maintenance", "error/site/site-unreachable", "error/site/site-unresponsive"]
+	    }
+	  }
+	};
+
+	var login = {
+	  url: "/login",
+	  swagger: {
+	    tags: ["Web"],
+	    method: "post",
+	    summary: "Initiate a session by logging in to an internet banking account",
+	    operationId: "login"
+	  },
+	  shapes: {
+	    inputs: "login",
+	    outputs: {
+	      success: "login/success",
+	      interim: ["login/interim-input-abs-pass", "login/interim-input-std-otp", "login/interim-wait-cap-2fa"],
+	      error: [// general & web
+	      "error/common/access/exceeded-max-concurrent-requests", "error/common/access/insufficient-credit", "error/common/dev/authorization", "error/common/dev/invalid-inputs", "error/common/exception", "error/fnb/online-banking-legal-documentation", "error/site/bank-blocked", "error/site/captcha", "error/site/input-validation-failed", "error/site/internal", "error/site/login-failed", "error/site/ok-got-it", "error/site/site-change-detected", "error/site/site-maintenance", "error/site/site-unreachable", "error/site/site-unresponsive"]
+	    }
+	  }
+	};
+
+	var loginInterimInput = {
+	  url: "/login-interim-input",
+	  swagger: {
+	    tags: ["Web"],
+	    method: "post",
+	    summary: "2nd step in a 2-step login process where user input is required - e.g. STD OTP & ABS pass",
+	    operationId: "login"
+	  },
+	  shapes: {
+	    // NOTE: don't use "client-gw" || "gw-client" prefixes - breaks $refs in swagger
+	    inputs: ["login-interim-input/abs-pass", "login-interim-input/std-otp"],
+	    outputs: {
+	      success: "login-interim-input/success",
+	      error: [// general & web
+	      "error/common/dev/invalid-inputs", "error/common/dev/sent-another-request-after-final-response", "error/common/exception", "error/common/session-in-use", "error/common/session-timed-out", "error/fnb/online-banking-legal-documentation", "error/site/bank-blocked", "error/site/captcha", "error/site/input-validation-failed", "error/site/internal", "error/site/login-failed", "error/site/ok-got-it", "error/site/site-change-detected", "error/site/site-maintenance", "error/site/site-unreachable", "error/site/site-unresponsive", "error/user/denied", "error/user/took-too-long"]
+	    }
+	  }
+	};
+
+	var loginInterimWait = {
+	  url: "/login-interim-wait",
+	  swagger: {
+	    tags: ["Web"],
+	    method: "post",
+	    summary: "2nd step in a 2-step login process where user input is NOT required - e.g. CAP wait",
+	    operationId: "login"
+	  },
+	  shapes: {
+	    // NOTE: don't use "client-gw" || "gw-client" prefixes - breaks $refs in swagger
+	    inputs: "login-interim-wait",
+	    outputs: {
+	      success: "login-interim-wait/success",
+	      error: [// general & web
+	      "error/common/dev/invalid-inputs", "error/common/dev/sent-another-request-after-final-response", "error/common/exception", "error/common/session-in-use", "error/common/session-timed-out", "error/fnb/online-banking-legal-documentation", "error/site/bank-blocked", "error/site/captcha", "error/site/input-validation-failed", "error/site/internal", "error/site/login-failed", "error/site/ok-got-it", "error/site/site-change-detected", "error/site/site-maintenance", "error/site/site-unreachable", "error/site/site-unresponsive", "error/user/denied", "error/user/took-too-long"]
+	    }
+	  }
+	};
+
+	var statements = {
+	  url: "/statements",
+	  swagger: {
+	    tags: ["Web"],
+	    method: "post",
+	    summary: "Archived history statement (some banks may charge)",
+	    operationId: "statements"
+	  },
+	  shapes: {
+	    // NOTE: don't use "client-gw" || "gw-client" prefixes - breaks $refs in swagger
+	    inputs: "statements",
+	    outputs: {
+	      success: ["file/success"],
+	      error: [// general & web
+	      "error/common/dev/authorization", "error/common/dev/function-not-supported-on-site", "error/common/dev/invalid-inputs", "error/common/dev/sent-another-request-after-final-response", "error/common/exception", "error/common/session-in-use", "error/common/session-timed-out", "error/fnb/statements-disabled", "error/site/bank-blocked", "error/site/input-validation-failed", "error/site/internal", "error/site/no-statements-available", "error/site/site-change-detected", "error/site/site-maintenance", "error/site/site-unreachable", "error/site/site-unresponsive"]
+	    }
+	  }
+	};
+
+	var transactions = {
+	  url: "/transactions",
+	  swagger: {
+	    tags: ["Web"],
+	    method: "post",
+	    summary: "Up to 90 days transaction history",
+	    operationId: "transactions"
+	  },
+	  shapes: {
+	    // NOTE: don't use "client-gw" || "gw-client" prefixes - breaks $refs in swagger
+	    inputs: "transactions",
+	    outputs: {
+	      success: "transactions/success",
+	      error: [// general & web
+	      "error/common/dev/authorization", "error/common/dev/invalid-inputs", "error/common/dev/sent-another-request-after-final-response", "error/common/exception", "error/common/session-in-use", "error/common/session-timed-out", "error/site/bank-blocked", "error/site/input-validation-failed", "error/site/internal", "error/site/no-transactions-over-period", "error/site/site-change-detected", "error/site/site-maintenance", "error/site/site-unreachable", "error/site/site-unresponsive"]
+	    }
+	  }
+	};
+
+	var close = {
+	  url: "/close",
+	  swagger: {
+	    tags: ["Web"],
+	    method: "post",
+	    summary: "Close an open session",
+	    operationId: "close"
+	  },
+	  shapes: {
+	    // NOTE: don't use "client-gw" || "gw-client" prefixes - breaks $refs in swagger
+	    inputs: "close",
+	    outputs: {
+	      success: ["close/success"],
+	      error: [// general & web
+	      "error/common/dev/authorization", "error/common/dev/invalid-inputs", "error/common/dev/sent-another-request-after-final-response", "error/common/exception", "error/common/session-in-use", "error/common/session-timed-out", "error/site/input-validation-failed", "error/site/internal", "error/site/site-change-detected", "error/site/site-unreachable", "error/site/site-unresponsive"]
+	    }
+	  }
+	};
+
+	// const PdfResult = require("../../spike-pdf/src/result"); <= causes circular include problem
+	// see:
+	//  - /spike/dev/spike-pdf/test/swagger.js
+	//  - `mocha ${SPIKE_ROOT}/spike-pdf/test/index.js`
+	var pdf = {
+	  url: "/pdf",
+	  swagger: {
+	    tags: ["Utilities"],
+	    method: "post",
+	    summary: "Parse a pdf statement and return transactions and account holder info",
+	    description: "Note - does not require login",
+	    operationId: "pdf"
+	  },
+	  shapes: {
+	    inputs: "pdf",
+	    outputs: {
+	      // keep in sync with $/spike-db/src/lib/pdfReviewSystem.js: codeToParseResultState - see $/spike-pdf/test/spikeApiEnums.js
+	      success: ["pdf/success/bank-statement-no-balance", "pdf/success/bank-statement-normal", "pdf/success/credit-card-breakdown-multi-user", "pdf/success/credit-card-breakdown", "pdf/success/credit-card-simple"],
+	      error: [// general
+	      "error/common/access/exceeded-max-concurrent-requests", "error/common/access/insufficient-credit", "error/common/dev/authorization", "error/common/dev/invalid-inputs", "error/common/exception", // pdf specific
+	      "pdf/fail/auto-detect", "pdf/fail/file-not-found", "pdf/fail/pdf-read-exception", "pdf/fail/invalid-pdf-exception", "pdf/fail/password-incorrect", "pdf/fail/password-required", "pdf/fail/image-pdf", "pdf/fail/image-pdf-with-ocr", "pdf/fail/pdf-js-error", "pdf/fail/pdf-js-exception", "pdf/fail/unknown-pdf", "pdf/fail/multiple-matching-parsers", "pdf/fail/unknown-exception", "pdf/fail/failed-to-extract-statement-date", "pdf/fail/failed-to-extract-credit-breakdown", "pdf/fail/invalid-data-extracted"]
+	    },
+	    additional: {// enums,
+	      // schemas
+	    }
+	  }
+	};
+
+	// const CsvResult = require("../../spike-csv/src/result"); <= causes circular include problem
+	// see:
+	//  - /spike/dev/spike-csv/test/swagger.js
+	//  - `mocha ${SPIKE_ROOT}/spike-csv/test/index.js`
+	var csv = {
+	  url: "/csv",
+	  swagger: {
+	    tags: ["Utilities"],
+	    method: "post",
+	    summary: "Parse a csv statement and return transactions and account holder info",
+	    description: "Note - does not require login",
+	    operationId: "csv"
+	  },
+	  shapes: {
+	    inputs: "csv",
+	    outputs: {
+	      // keep in sync with $/spike-db/src/lib/pdfReviewSystem.js: codeToParseResultState - see $/spike-csv/test/spikeApiEnums.js
+	      success: ["csv/success/bank-statement"],
+	      error: [// general
+	      "error/common/access/exceeded-max-concurrent-requests", "error/common/access/insufficient-credit", "error/common/dev/authorization", "error/common/dev/invalid-inputs", "error/common/exception", // csv specific
+	      "csv/fail/unknown-csv", "csv/fail/multiple-matching-parsers", "csv/fail/unknown-exception", "csv/fail/invalid-data-extracted"]
+	    },
+	    additional: {// enums,
+	      // schemas
+	    }
+	  }
+	};
+
+	var _function = {
+	  accounts,
+	  estatement,
+	  login,
+	  "login-interim-input": loginInterimInput,
+	  "login-interim-wait": loginInterimWait,
+	  statements,
+	  transactions,
+	  close,
+	  pdf,
+	  csv,
+	  check: function (func) {
+	    if (this[func]) {
+	      return true;
+	    } else {
+	      let funcs = Object.keys(this).filter(x => x !== "check").join("\n");
+	      console.error(`invalid function, valid options = \n${funcs}`);
+	      return false;
+	    }
+	  }
+	};
+
+	var _static = createCommonjsModule(function (module) {
+	const _server = "https://api-v6.spikedata.co.za";
+
+	function buildUrls(server) {
+	  return {
+	    // web
+	    accounts: server + _function["accounts"].url,
+	    estatement: server + _function["estatement"].url,
+	    login: server + _function["login"].url,
+	    "login-interim-input": server + _function["login-interim-input"].url,
+	    "login-interim-wait": server + _function["login-interim-wait"].url,
+	    statements: server + _function["statements"].url,
+	    transactions: server + _function["transactions"].url,
+	    close: server + _function["close"].url,
+	    // pdf
+	    pdf: server + _function["pdf"].url,
+	    csv: server + _function["csv"].url
+	  };
+	}
+
+	module.exports = {
+	  url: buildUrls(_server),
+
+	  changeServer(server) {
+	    module.exports.url = buildUrls(server);
+	  }
+
+	};
+	});
+	var _static_1 = _static.url;
+	var _static_2 = _static.changeServer;
+
 	// see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
 	class ShapeNotFoundError extends Error {
 	  constructor(code) {
@@ -2341,186 +2603,6 @@
 	var _enum_2 = _enum.Enum;
 	var _enum_3 = _enum.createEnum;
 
-	// const PdfResult = require("../../spike-pdf/src/result"); <= causes circular include problem
-	// see:
-	//  - /spike/dev/spike-pdf/test/swagger.js
-	//  - `mocha ${SPIKE_ROOT}/spike-pdf/test/index.js`
-	var pdf = {
-	  url: "/pdf",
-	  swagger: {
-	    tags: ["Utilities"],
-	    method: "post",
-	    summary: "Parse a pdf statement and return transactions and account holder info",
-	    description: "Note - does not require login",
-	    operationId: "pdf"
-	  },
-	  shapes: {
-	    inputs: "pdf",
-	    outputs: {
-	      // keep in sync with $/spike-db/src/lib/pdfReviewSystem.js: codeToParseResultState - see $/spike-pdf/test/spikeApiEnums.js
-	      success: ["pdf/success/bank-statement-no-balance", "pdf/success/bank-statement-normal", "pdf/success/credit-card-breakdown-multi-user", "pdf/success/credit-card-breakdown", "pdf/success/credit-card-simple"],
-	      error: [// general
-	      "error/common/access/exceeded-max-concurrent-requests", "error/common/access/insufficient-credit", "error/common/dev/authorization", "error/common/dev/invalid-inputs", "error/common/exception", // pdf specific
-	      "pdf/fail/auto-detect", "pdf/fail/file-not-found", "pdf/fail/pdf-read-exception", "pdf/fail/invalid-pdf-exception", "pdf/fail/password-incorrect", "pdf/fail/password-required", "pdf/fail/image-pdf", "pdf/fail/image-pdf-with-ocr", "pdf/fail/pdf-js-error", "pdf/fail/pdf-js-exception", "pdf/fail/unknown-pdf", "pdf/fail/multiple-matching-parsers", "pdf/fail/unknown-exception", "pdf/fail/failed-to-extract-statement-date", "pdf/fail/failed-to-extract-credit-breakdown", "pdf/fail/invalid-data-extracted"]
-	    },
-	    additional: {// enums,
-	      // schemas
-	    }
-	  }
-	};
-
-	var login = {
-	  url: "/login",
-	  swagger: {
-	    tags: ["Web"],
-	    method: "post",
-	    summary: "Initiate a session by logging in to an internet banking account",
-	    operationId: "login"
-	  },
-	  shapes: {
-	    inputs: "login",
-	    outputs: {
-	      success: "login/success",
-	      interim: ["login/interim-input-abs-pass", "login/interim-input-std-otp", "login/interim-wait-cap-2fa"],
-	      error: [// general & web
-	      "error/common/access/exceeded-max-concurrent-requests", "error/common/access/insufficient-credit", "error/common/dev/authorization", "error/common/dev/invalid-inputs", "error/common/exception", "error/fnb/online-banking-legal-documentation", "error/site/bank-blocked", "error/site/captcha", "error/site/input-validation-failed", "error/site/internal", "error/site/login-failed", "error/site/ok-got-it", "error/site/site-change-detected", "error/site/site-maintenance", "error/site/site-unreachable", "error/site/site-unresponsive"]
-	    }
-	  }
-	};
-
-	var loginInterimInput = {
-	  url: "/login-interim-input",
-	  swagger: {
-	    tags: ["Web"],
-	    method: "post",
-	    summary: "2nd step in a 2-step login process where user input is required - e.g. STD OTP & ABS pass",
-	    operationId: "login"
-	  },
-	  shapes: {
-	    // NOTE: don't use "client-gw" || "gw-client" prefixes - breaks $refs in swagger
-	    inputs: ["login-interim-input/abs-pass", "login-interim-input/std-otp"],
-	    outputs: {
-	      success: "login-interim-input/success",
-	      error: [// general & web
-	      "error/common/dev/invalid-inputs", "error/common/dev/sent-another-request-after-final-response", "error/common/exception", "error/common/session-in-use", "error/common/session-timed-out", "error/fnb/online-banking-legal-documentation", "error/site/bank-blocked", "error/site/captcha", "error/site/input-validation-failed", "error/site/internal", "error/site/login-failed", "error/site/ok-got-it", "error/site/site-change-detected", "error/site/site-maintenance", "error/site/site-unreachable", "error/site/site-unresponsive", "error/user/denied", "error/user/took-too-long"]
-	    }
-	  }
-	};
-
-	var loginInterimWait = {
-	  url: "/login-interim-wait",
-	  swagger: {
-	    tags: ["Web"],
-	    method: "post",
-	    summary: "2nd step in a 2-step login process where user input is NOT required - e.g. CAP wait",
-	    operationId: "login"
-	  },
-	  shapes: {
-	    // NOTE: don't use "client-gw" || "gw-client" prefixes - breaks $refs in swagger
-	    inputs: "login-interim-wait",
-	    outputs: {
-	      success: "login-interim-wait/success",
-	      error: [// general & web
-	      "error/common/dev/invalid-inputs", "error/common/dev/sent-another-request-after-final-response", "error/common/exception", "error/common/session-in-use", "error/common/session-timed-out", "error/fnb/online-banking-legal-documentation", "error/site/bank-blocked", "error/site/captcha", "error/site/input-validation-failed", "error/site/internal", "error/site/login-failed", "error/site/ok-got-it", "error/site/site-change-detected", "error/site/site-maintenance", "error/site/site-unreachable", "error/site/site-unresponsive", "error/user/denied", "error/user/took-too-long"]
-	    }
-	  }
-	};
-
-	var accounts = {
-	  url: "/accounts",
-	  swagger: {
-	    tags: ["Web"],
-	    method: "post",
-	    summary: "List all accounts & balances held by user",
-	    operationId: "accounts"
-	  },
-	  shapes: {
-	    // NOTE: don't use "client-gw" || "gw-client" prefixes - breaks $refs in swagger
-	    inputs: "accounts",
-	    outputs: {
-	      success: ["accounts/success"],
-	      error: [// general & web
-	      "error/common/dev/authorization", "error/common/dev/invalid-inputs", "error/common/dev/sent-another-request-after-final-response", "error/common/exception", "error/common/session-in-use", "error/common/session-timed-out", "error/site/input-validation-failed", "error/site/internal", "error/site/site-change-detected", "error/site/site-unreachable", "error/site/site-unresponsive"]
-	    }
-	  }
-	};
-
-	var close = {
-	  url: "/close",
-	  swagger: {
-	    tags: ["Web"],
-	    method: "post",
-	    summary: "Close an open session",
-	    operationId: "close"
-	  },
-	  shapes: {
-	    // NOTE: don't use "client-gw" || "gw-client" prefixes - breaks $refs in swagger
-	    inputs: "close",
-	    outputs: {
-	      success: ["close/success"],
-	      error: [// general & web
-	      "error/common/dev/authorization", "error/common/dev/invalid-inputs", "error/common/dev/sent-another-request-after-final-response", "error/common/exception", "error/common/session-in-use", "error/common/session-timed-out", "error/site/input-validation-failed", "error/site/internal", "error/site/site-change-detected", "error/site/site-unreachable", "error/site/site-unresponsive"]
-	    }
-	  }
-	};
-
-	var transactions = {
-	  url: "/transactions",
-	  swagger: {
-	    tags: ["Web"],
-	    method: "post",
-	    summary: "Up to 90 days transaction history",
-	    operationId: "transactions"
-	  },
-	  shapes: {
-	    // NOTE: don't use "client-gw" || "gw-client" prefixes - breaks $refs in swagger
-	    inputs: "transactions",
-	    outputs: {
-	      success: "transactions/success",
-	      error: [// general & web
-	      "error/common/dev/authorization", "error/common/dev/invalid-inputs", "error/common/dev/sent-another-request-after-final-response", "error/common/exception", "error/common/session-in-use", "error/common/session-timed-out", "error/site/bank-blocked", "error/site/input-validation-failed", "error/site/internal", "error/site/no-transactions-over-period", "error/site/site-change-detected", "error/site/site-maintenance", "error/site/site-unreachable", "error/site/site-unresponsive"]
-	    }
-	  }
-	};
-
-	var statements = {
-	  url: "/statements",
-	  swagger: {
-	    tags: ["Web"],
-	    method: "post",
-	    summary: "Archived history statement (some banks may charge)",
-	    operationId: "statements"
-	  },
-	  shapes: {
-	    // NOTE: don't use "client-gw" || "gw-client" prefixes - breaks $refs in swagger
-	    inputs: "statements",
-	    outputs: {
-	      success: ["file/success"],
-	      error: [// general & web
-	      "error/common/dev/authorization", "error/common/dev/function-not-supported-on-site", "error/common/dev/invalid-inputs", "error/common/dev/sent-another-request-after-final-response", "error/common/exception", "error/common/session-in-use", "error/common/session-timed-out", "error/fnb/statements-disabled", "error/site/bank-blocked", "error/site/input-validation-failed", "error/site/internal", "error/site/no-statements-available", "error/site/site-change-detected", "error/site/site-maintenance", "error/site/site-unreachable", "error/site/site-unresponsive"]
-	    }
-	  }
-	};
-
-	var estatement = {
-	  url: "/estatement",
-	  swagger: {
-	    tags: ["Web"],
-	    method: "post",
-	    summary: "Branded statement (free to download)",
-	    operationId: "estatement"
-	  },
-	  shapes: {
-	    // NOTE: don't use "client-gw" || "gw-client" prefixes - breaks $refs in swagger
-	    inputs: "estatement",
-	    outputs: {
-	      success: "file/success",
-	      error: [// general & web
-	      "error/common/dev/authorization", "error/common/dev/function-not-supported-on-site", "error/common/dev/invalid-inputs", "error/common/dev/sent-another-request-after-final-response", "error/common/exception", "error/common/session-in-use", "error/common/session-timed-out", "error/site/bank-blocked", "error/site/captcha", "error/site/input-validation-failed", "error/site/internal", "error/site/no-statements-available", "error/site/site-change-detected", "error/site/site-maintenance", "error/site/site-unreachable", "error/site/site-unresponsive"]
-	    }
-	  }
-	};
-
 	var enums = createCommonjsModule(function (module, exports) {
 	exports.TYPES = _enum.createEnum("TYPES", {
 	  NOTSET: 0,
@@ -2580,13 +2662,63 @@
 	  }
 	};
 
+	exports.Bank = {
+	  ABS: {
+	    code: "ABS",
+	    name: "ABSA"
+	  },
+	  BID: {
+	    code: "BID",
+	    name: "Bidvest"
+	  },
+	  CAP: {
+	    code: "CAP",
+	    name: "Capitec"
+	  },
+	  DEA: {
+	    code: "DEA",
+	    name: "Document Exchange Association"
+	  },
+	  DIS: {
+	    code: "DIS",
+	    name: "Discovery"
+	  },
+	  FNB: {
+	    code: "FNB",
+	    name: "FNB"
+	  },
+	  INV: {
+	    code: "INV",
+	    name: "Investec"
+	  },
+	  NED: {
+	    code: "NED",
+	    name: "Nedbank"
+	  },
+	  RMB: {
+	    code: "RMB",
+	    name: "RMB"
+	  },
+	  SAS: {
+	    code: "SAS",
+	    name: "Safin"
+	  },
+	  STD: {
+	    code: "STD",
+	    name: "Standard Bank"
+	  },
+	  TYM: {
+	    code: "TYM",
+	    name: "TYME"
+	  }
+	};
 	exports.SiteToBankName = {
-	  "ABS.0": "ABSA",
-	  "CAP.0": "Capitec",
-	  "FNB.0": "FNB",
-	  "NED.0": "Nedbank",
-	  "RMB.0": "RMB",
-	  "STD.2018-01": "Standard Bank"
+	  "ABS.0": exports.Bank.ABS.name,
+	  "CAP.0": exports.Bank.CAP.name,
+	  "FNB.0": exports.Bank.FNB.name,
+	  "NED.0": exports.Bank.NED.name,
+	  "RMB.0": exports.Bank.RMB.name,
+	  "STD.2018-01": exports.Bank.STD.name
 	};
 	exports.SiteMeta = {
 	  "ABS.0": {
@@ -2638,6 +2770,18 @@
 	  return arr;
 	}, []); // console.log(exports.PdfParserAll);
 	//#endregion
+	//#region csv
+	// Documents expected values - not an enum
+	// see $/spike-csv/tools/doc.js
+
+	exports.CsvParser = {
+	  bankStatementsNormal: ["ABS1", "CAP1"]
+	};
+	exports.CsvParserAll = Object.keys(exports.CsvParser).reduce((arr, k) => {
+	  arr = arr.concat(exports.CsvParser[k]);
+	  return arr;
+	}, []); // console.log(exports.CsvParserAll);
+	//#endregion
 	//#region internal
 
 	exports.Channel = _enum.createEnum("Channel", {
@@ -2659,14 +2803,17 @@
 	var enums_4 = enums.Sites;
 	var enums_5 = enums.SiteToFunction;
 	var enums_6 = enums.isSupported;
-	var enums_7 = enums.SiteToBankName;
-	var enums_8 = enums.SiteMeta;
-	var enums_9 = enums.bankToSite;
-	var enums_10 = enums.PdfType;
-	var enums_11 = enums.PdfParser;
-	var enums_12 = enums.PdfParserAll;
-	var enums_13 = enums.Channel;
-	var enums_14 = enums.LogLevel;
+	var enums_7 = enums.Bank;
+	var enums_8 = enums.SiteToBankName;
+	var enums_9 = enums.SiteMeta;
+	var enums_10 = enums.bankToSite;
+	var enums_11 = enums.PdfType;
+	var enums_12 = enums.PdfParser;
+	var enums_13 = enums.PdfParserAll;
+	var enums_14 = enums.CsvParser;
+	var enums_15 = enums.CsvParserAll;
+	var enums_16 = enums.Channel;
+	var enums_17 = enums.LogLevel;
 
 	var uri_all = createCommonjsModule(function (module, exports) {
 	/** @license URI.js v4.2.1 (c) 2011 Gary Court. License: http://github.com/garycourt/uri-js */
@@ -9797,7 +9944,7 @@
 	}; //const uuidV4Regex = /^[A-F\d]{8}-[A-F\d]{4}-4[A-F\d]{3}-[89AB][A-F\d]{3}-[A-F\d]{12}$/i; // https://gist.github.com/bugventure/f71337e3927c34132b9a
 
 
-	const uuidV4Regex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
+	const uuidV4Regex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 
 	exports.validUuidV4 = function (s) {
 	  return uuidV4Regex.test(s);
@@ -10134,6 +10281,127 @@
 	var close_10 = close$1.ownSanitize;
 	var close_11 = close$1.sanitize;
 
+	// see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
+	class PdfTooLargeError extends Error {
+	  constructor(validationErrorsArray) {
+	    super("Spike pdf too large error"); // Maintains proper stack trace for where our error was thrown (only available on V8)
+
+	    if (Error.captureStackTrace) {
+	      Error.captureStackTrace(this, PdfTooLargeError);
+	    }
+
+	    this.name = "PdfTooLargeError";
+	    this.validationErrors = validationErrorsArray;
+	  }
+
+	}
+
+	PdfTooLargeError.Max = 6 * 1024 * 1024;
+	var pdfTooLargeError = PdfTooLargeError;
+
+	var csv$1 = createCommonjsModule(function (module, exports) {
+	exports.code = "csv";
+	exports.type = enums.TYPES.INPUTS;
+	exports.marshallTo = "gw-lambda/lchan/csv";
+	exports.channel = enums.Channel.Lchan;
+	exports.sessionBased = false; //#region examples
+
+	exports.examples = {
+	  default: {
+	    file: "abs.csv",
+	    buffer: "..."
+	  }
+	}; //#endregion
+	//#region create
+
+	exports.create = function (csvPath, pass, buffer) {
+	  if (!buffer && !csvPath) {
+	    throw new inputValidationError(["must supply csvPath or buffer"]);
+	  }
+
+	  if (buffer) {
+	    if (!csvPath) {
+	      // supplied buffer but didn't say what original filename was
+	      csvPath = "not-supplied";
+	    }
+	  } else {
+	    // supplied csvPath only - not buffer
+	    buffer = fs.readFileSync(csvPath);
+	    buffer = buffer.toString("base64");
+	  }
+
+	  if (buffer.length > pdfTooLargeError.Max) {
+	    throw new pdfTooLargeError();
+	  }
+
+	  let instance = {
+	    file: path ? path.basename(csvPath) : csvPath,
+	    buffer,
+	    pass
+	  };
+	  let errors = schema.validate(exports.code, exports.validate, instance, exports.nestedSchemas);
+
+	  if (errors) {
+	    throw new inputValidationError(errors);
+	  }
+
+	  return instance;
+	}; //#endregion
+	//#region validate
+
+
+	exports.validate = function (data) {
+	  let validationErrors = [];
+
+	  if (!data.file) {
+	    validationErrors.push("missing required input: file");
+	  }
+
+	  if (!data.buffer) {
+	    validationErrors.push("missing required input: buffer");
+	  }
+
+	  return validationErrors.length === 0 ? undefined : validationErrors;
+	};
+
+	exports.schema = {
+	  type: "object",
+	  properties: {
+	    file: {
+	      type: "string",
+	      required: true
+	    },
+	    buffer: {
+	      type: "string",
+	      // base64 encoded csv buffer
+	      required: true
+	    }
+	  }
+	}; //#endregion
+	//#region sanitize
+	// NOTE: custom sanitizer in order to prevent buffer being deep cloned before being [redacted]
+
+	exports.sanitize = function (data) {
+	  let temp = data.buffer;
+	  delete data.buffer;
+	  let clone = Object.assign({
+	    buffer: "[redacted]"
+	  }, data);
+	  data.buffer = temp;
+	  return clone;
+	}; //#endregion
+	});
+	var csv_1 = csv$1.code;
+	var csv_2 = csv$1.type;
+	var csv_3 = csv$1.marshallTo;
+	var csv_4 = csv$1.channel;
+	var csv_5 = csv$1.sessionBased;
+	var csv_6 = csv$1.examples;
+	var csv_7 = csv$1.create;
+	var csv_8 = csv$1.validate;
+	var csv_9 = csv$1.schema;
+	var csv_10 = csv$1.sanitize;
+
 	var estatement$1 = createCommonjsModule(function (module, exports) {
 	exports.code = "estatement";
 	exports.type = enums.TYPES.INPUTS;
@@ -10271,7 +10539,8 @@
 	  properties: {
 	    site: {
 	      type: "string",
-	      required: true
+	      required: true,
+	      enum: enums.Sites.keys()
 	    },
 	    user: {
 	      type: "string",
@@ -10558,24 +10827,6 @@
 	var loginInterimWait_9 = loginInterimWait$1.validate;
 	var loginInterimWait_10 = loginInterimWait$1.ownSanitize;
 	var loginInterimWait_11 = loginInterimWait$1.sanitize;
-
-	// see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
-	class PdfTooLargeError extends Error {
-	  constructor(validationErrorsArray) {
-	    super("Spike pdf too large error"); // Maintains proper stack trace for where our error was thrown (only available on V8)
-
-	    if (Error.captureStackTrace) {
-	      Error.captureStackTrace(this, PdfTooLargeError);
-	    }
-
-	    this.name = "PdfTooLargeError";
-	    this.validationErrors = validationErrorsArray;
-	  }
-
-	}
-
-	PdfTooLargeError.Max = 6 * 1024 * 1024;
-	var pdfTooLargeError = PdfTooLargeError;
 
 	var pdf$1 = createCommonjsModule(function (module, exports) {
 	exports.code = "pdf";
@@ -10948,38 +11199,471 @@
 		sanitize: sanitize
 	};
 
-	var code$2 = "error/no-data"; // override in instance
-
+	var code$2 = "csv/fail/invalid-data-extracted";
 	var type$3 = enums.TYPES.ERROR;
-	var examples$1 = undefined; // override in instance
-
-	var validate$4 = undefined;
-	var sanitize$1 = undefined;
-	var noData_1 = true;
 	var passThrough$1 = true; // from lambda-gw
 
+	var noData$1 = true;
+	var blame = enums.BLAME.SPIKE;
 	var noSessionId = true; // shapeExplorer
 
-	var noData$1 = {
+	var message = "we successfully extract the data from the csv however it did not conform to the expected output schema"; // noData
+
+	var examples$1 = undefined;
+	var validate$4 = undefined;
+	var sanitize$1 = undefined;
+
+	var invalidDataExtracted = {
 		code: code$2,
 		type: type$3,
+		passThrough: passThrough$1,
+		noData: noData$1,
+		blame: blame,
+		noSessionId: noSessionId,
+		message: message,
 		examples: examples$1,
 		validate: validate$4,
-		sanitize: sanitize$1,
+		sanitize: sanitize$1
+	};
+
+	var code$3 = "csv/fail/multiple-matching-parsers";
+	var type$4 = enums.TYPES.ERROR;
+	var passThrough$2 = true; // from lambda-gw
+
+	var noData$2 = true;
+	var blame$1 = enums.BLAME.SPIKE;
+	var noSessionId$1 = true; // shapeExplorer
+
+	var message$1 = "two or more parsers were found which can process this csv"; // noData
+
+	var examples$2 = undefined;
+	var validate$5 = undefined;
+	var sanitize$2 = undefined;
+
+	var multipleMatchingParsers = {
+		code: code$3,
+		type: type$4,
+		passThrough: passThrough$2,
+		noData: noData$2,
+		blame: blame$1,
+		noSessionId: noSessionId$1,
+		message: message$1,
+		examples: examples$2,
+		validate: validate$5,
+		sanitize: sanitize$2
+	};
+
+	var code$4 = "csv/fail/unknown-csv";
+	var type$5 = enums.TYPES.ERROR;
+	var passThrough$3 = true; // from lambda-gw
+
+	var noData$3 = true;
+	var blame$2 = enums.BLAME.SPIKE;
+	var noSessionId$2 = true; // shapeExplorer
+
+	var message$2 = "we did not recognise this csv format"; // noData
+
+	var examples$3 = undefined;
+	var validate$6 = undefined;
+	var sanitize$3 = undefined;
+
+	var unknownCsv = {
+		code: code$4,
+		type: type$5,
+		passThrough: passThrough$3,
+		noData: noData$3,
+		blame: blame$2,
+		noSessionId: noSessionId$2,
+		message: message$2,
+		examples: examples$3,
+		validate: validate$6,
+		sanitize: sanitize$3
+	};
+
+	var code$5 = "csv/fail/unknown-exception";
+	var type$6 = enums.TYPES.ERROR;
+	var passThrough$4 = true; // from lambda-gw
+
+	var noData$4 = true;
+	var blame$3 = enums.BLAME.SPIKE;
+	var noSessionId$3 = true; // shapeExplorer
+
+	var message$3 = "an unspecified exception ocurred"; // noData
+
+	var examples$4 = undefined;
+	var validate$7 = undefined;
+	var sanitize$4 = undefined;
+
+	var unknownException = {
+		code: code$5,
+		type: type$6,
+		passThrough: passThrough$4,
+		noData: noData$4,
+		blame: blame$3,
+		noSessionId: noSessionId$3,
+		message: message$3,
+		examples: examples$4,
+		validate: validate$7,
+		sanitize: sanitize$4
+	};
+
+	var nested = createCommonjsModule(function (module, exports) {
+
+	exports.resolve = function (path, arrayOfNestedShapes) {
+
+	  let deps = {
+	    schemas: [],
+	    shapes: []
+	  };
+	  let ok = true;
+
+	  for (let child of arrayOfNestedShapes) {
+	    if (!child.validate) {
+	      log.fatal(`${path}: bad nested deps - child ${child.id} does not have .validate`);
+	      ok = false;
+	    } else {
+	      // check valid nestable shape
+	      if (core.isFunction(child.validate)) {
+	        log.fatal(`${path}: bad nested deps - child has custom function .validate instead of a schema`);
+	        ok = false;
+	      }
+
+	      if (!core.isObject(child.validate)) {
+	        log.fatal(`${path}: bad nested deps - child .validate is not a schema object`);
+	        ok = false;
+	      }
+
+	      if (!child.validate.id) {
+	        log.fatal(`${path}: bad nested deps - child does not have an .id`);
+	        ok = false;
+	      } // child is a valid netsable shape - include it in deps
+
+
+	      deps.schemas.push(child.validate);
+	      deps.shapes.push(child); // now see whether the child has any nested deps
+
+	      let childPath = path + ":" + child.validate.id;
+
+	      if (child.nested) {
+	        let childDeps = exports.resolve(childPath, child.nested);
+
+	        if (childDeps && childDeps.schemas && childDeps.schemas.length) {
+
+	          deps.schemas = deps.schemas.concat(childDeps.schemas);
+	          deps.shapes = deps.shapes.concat(childDeps.shapes);
+	        }
+	      }
+	    }
+	  }
+
+	  if (!ok) {
+	    throw new Error(`${path}: bad nested deps`);
+	  }
+
+	  return deps;
+	};
+	});
+	var nested_1 = nested.resolve;
+
+	var code$6 = "gw-client/nested/transaction-no-balance";
+	var validate$8 = {
+	  id: "/transaction-no-balance",
+	  // NOTE: must match root.$ref in parent schema
+	  type: "object",
+	  properties: {
+	    id: {
+	      required: true,
+	      type: "integer"
+	    },
+	    date: {
+	      required: true,
+	      format: "date-or-iso-str"
+	    },
+	    description: {
+	      required: true,
+	      type: "array",
+	      items: {
+	        type: "string"
+	      }
+	    },
+	    amount: {
+	      required: false,
+	      type: "number"
+	    } // optional: balance brought forward lines have no amount
+
+	  }
+	};
+	var examples$5 = {
+	  1: {
+	    id: 1,
+	    date: "2017-09-12T00:00:00.000Z",
+	    description: ["Deposit"],
+	    amount: 1600.01
+	  },
+	  2: {
+	    id: 2,
+	    // note: should be 3 - see breaks
+	    date: "2017-09-12T00:00:00.000Z",
+	    description: ["#Monthly Account Fee"],
+	    amount: -100
+	  },
+	  3: {
+	    id: 3,
+	    // note: should be 2 - see breaks
+	    date: "2017-09-12T00:00:00.000Z",
+	    description: ["Woolworths"],
+	    amount: -500
+	  }
+	};
+
+	var transactionNoBalance = {
+		code: code$6,
+		validate: validate$8,
+		examples: examples$5
+	};
+
+	var transactionsNoBalance = createCommonjsModule(function (module, exports) {
+	const nested$1 = {
+	  "transaction-no-balance": transactionNoBalance
+	};
+	exports.code = "gw-client/nested/transactions-no-balance";
+	exports.validate = {
+	  id: "/transactions-no-balance",
+	  // NOTE: must match root.$ref in parent schema
+	  type: "array",
+	  items: {
+	    $ref: nested$1["transaction-no-balance"].validate.id
+	  }
+	};
+	exports.nested = [nested$1["transaction-no-balance"]];
+	let {
+	  shapes,
+	  schemas
+	} = nested.resolve(exports.validate.id, exports.nested);
+	exports.nestedShapes = shapes;
+	exports.nestedSchemas = schemas;
+	exports.examples = {
+	  default: [nested$1["transaction-no-balance"].examples[1], nested$1["transaction-no-balance"].examples[2], nested$1["transaction-no-balance"].examples[3]]
+	};
+	});
+	var transactionsNoBalance_1 = transactionsNoBalance.code;
+	var transactionsNoBalance_2 = transactionsNoBalance.validate;
+	var transactionsNoBalance_3 = transactionsNoBalance.nested;
+	var transactionsNoBalance_4 = transactionsNoBalance.nestedShapes;
+	var transactionsNoBalance_5 = transactionsNoBalance.nestedSchemas;
+	var transactionsNoBalance_6 = transactionsNoBalance.examples;
+
+	var code$7 = "gw-client/nested/breaks";
+	var validate$9 = {
+	  id: "/breaks",
+	  // NOTE: must match root.$ref in parent schema
+	  type: "array",
+	  items: {
+	    type: "object",
+	    properties: {
+	      prev_id: {
+	        required: true,
+	        type: "integer"
+	      },
+	      cur_id: {
+	        required: true,
+	        type: "integer"
+	      },
+	      amount: {
+	        required: true,
+	        type: "number"
+	      },
+	      diff: {
+	        required: true,
+	        type: "number"
+	      }
+	    }
+	  }
+	};
+	var examples$6 = {
+	  default: [{
+	    prev_id: 1,
+	    cur_id: 2,
+	    amount: -100,
+	    diff: -500
+	  }, {
+	    prev_id: 2,
+	    cur_id: 3,
+	    amount: -500,
+	    diff: 600
+	  }]
+	};
+
+	var breaks = {
+		code: code$7,
+		validate: validate$9,
+		examples: examples$6
+	};
+
+	var bankStatement = createCommonjsModule(function (module, exports) {
+	const nested$1 = {
+	  transactionsNoBalance,
+	  breaks
+	};
+	exports.code = "csv/success/bank-statement";
+	exports.type = enums.TYPES.SUCCESS;
+	exports.passThrough = true; // from lambda-gw
+
+	exports.noSessionId = true; // shapeExplorer
+	//#region examples
+
+	let statement = {
+	  bank: "ABS",
+	  accountNumber: undefined,
+	  dates: {
+	    issuedOn: undefined,
+	    from: "2018-08-01T00:00:00.000Z",
+	    to: "2018-08-31T00:00:00.000Z"
+	  },
+	  nameAddress: ["Mr. J Smith"]
+	};
+	exports.examples = {
+	  success: {
+	    parser: "ABS1",
+	    statement,
+	    transactions: nested$1.transactionsNoBalance.examples.default,
+	    valid: true
+	  },
+	  successWithBreaks: {
+	    parser: "ABS1",
+	    statement,
+	    transactions: nested$1.transactionsNoBalance.examples.default,
+	    breaks: nested$1.breaks.examples.default,
+	    valid: false
+	  }
+	}; //#endregion
+	//#region validate
+
+	exports.validate = {
+	  id: "/bank-statement-csv",
+	  type: "object",
+	  properties: {
+	    parser: {
+	      required: true,
+	      type: "string",
+	      enum: enums.CsvParser.bankStatements
+	    },
+	    statement: {
+	      required: true,
+	      // same as ../nested/statement-info.js but with optional params
+	      type: "object",
+	      properties: {
+	        bank: {
+	          required: true,
+	          type: "string",
+	          enum: Object.values(enums.Bank).map(x => x.code)
+	        },
+	        accountNumber: {
+	          required: false,
+	          type: "string"
+	        },
+	        dates: {
+	          required: true,
+	          type: "object",
+	          properties: {
+	            issuedOn: {
+	              required: false,
+	              // type: "any",
+	              format: "date-or-iso-str"
+	            },
+	            from: {
+	              required: false,
+	              // type: "any",
+	              format: "date-or-iso-str"
+	            },
+	            to: {
+	              required: false,
+	              // type: "any",
+	              format: "date-or-iso-str"
+	            }
+	          }
+	        },
+	        nameAddress: {
+	          required: false,
+	          type: "array",
+	          items: {
+	            type: "string"
+	          }
+	        }
+	      }
+	    },
+	    transactions: {
+	      required: true,
+	      $ref: nested$1.transactionsNoBalance.validate.id
+	    },
+	    valid: {
+	      required: true,
+	      type: "boolean"
+	    },
+	    breaks: {
+	      required: false,
+	      $ref: nested$1.breaks.validate.id
+	    }
+	  }
+	};
+	exports.nested = [nested$1.transactionsNoBalance, nested$1.breaks];
+	let {
+	  shapes,
+	  schemas
+	} = nested.resolve(exports.validate.id, exports.nested);
+	exports.nestedShapes = shapes;
+	exports.nestedSchemas = schemas; //#endregion
+	//#region sanitize
+
+	exports.sanitize = {
+	  statement: {
+	    nameAddress: "[redacted]"
+	  }
+	}; //#endregion
+	});
+	var bankStatement_1 = bankStatement.code;
+	var bankStatement_2 = bankStatement.type;
+	var bankStatement_3 = bankStatement.passThrough;
+	var bankStatement_4 = bankStatement.noSessionId;
+	var bankStatement_5 = bankStatement.examples;
+	var bankStatement_6 = bankStatement.validate;
+	var bankStatement_7 = bankStatement.nested;
+	var bankStatement_8 = bankStatement.nestedShapes;
+	var bankStatement_9 = bankStatement.nestedSchemas;
+	var bankStatement_10 = bankStatement.sanitize;
+
+	var code$8 = "error/no-data"; // override in instance
+
+	var type$7 = enums.TYPES.ERROR;
+	var examples$7 = undefined; // override in instance
+
+	var validate$a = undefined;
+	var sanitize$5 = undefined;
+	var noData_1 = true;
+	var passThrough$5 = true; // from lambda-gw
+
+	var noSessionId$4 = true; // shapeExplorer
+
+	var noData$5 = {
+		code: code$8,
+		type: type$7,
+		examples: examples$7,
+		validate: validate$a,
+		sanitize: sanitize$5,
 		noData: noData_1,
-		passThrough: passThrough$1,
-		noSessionId: noSessionId
+		passThrough: passThrough$5,
+		noSessionId: noSessionId$4
 	};
 
 	var exceededMaxConcurrentRequests = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "too many active requests, try again later",
 	  code: "error/common/access/exceeded-max-concurrent-requests",
@@ -10988,13 +11672,13 @@
 
 	var insufficientCredit = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "please purchase more credits",
 	  code: "error/common/access/insufficient-credit",
@@ -11003,13 +11687,13 @@
 
 	var authorization = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "apiKey / userKey incorrect",
 	  code: "error/common/dev/authorization",
@@ -11018,33 +11702,33 @@
 
 	var functionNotSupportedOnSite = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "site does not support this function",
 	  code: "error/common/dev/function-not-supported-on-site",
 	  blame: enums.BLAME.CLIENT
 	};
 
-	var code$3 = "error/array-of-strings"; // override in instance
+	var code$9 = "error/array-of-strings"; // override in instance
 
-	var type$4 = enums.TYPES.ERROR;
-	var passThrough$2 = true; // from lambda-gw
+	var type$8 = enums.TYPES.ERROR;
+	var passThrough$6 = true; // from lambda-gw
 
-	var noSessionId$1 = true; // shapeExplorer
+	var noSessionId$5 = true; // shapeExplorer
 	//#region examples
 
-	var examples$2 = {
+	var examples$8 = {
 	  default: ["string1"]
 	}; //#endregion
 	//#region validate
 
-	var validate$5 = {
+	var validate$b = {
 	  type: "array",
 	  items: {
 	    type: "string"
@@ -11053,16 +11737,16 @@
 	}; //#endregion
 	//#region sanitize
 
-	var sanitize$2 = undefined; //#endregion
+	var sanitize$6 = undefined; //#endregion
 
 	var arrayOfStrings = {
-		code: code$3,
-		type: type$4,
-		passThrough: passThrough$2,
-		noSessionId: noSessionId$1,
-		examples: examples$2,
-		validate: validate$5,
-		sanitize: sanitize$2
+		code: code$9,
+		type: type$8,
+		passThrough: passThrough$6,
+		noSessionId: noSessionId$5,
+		examples: examples$8,
+		validate: validate$b,
+		sanitize: sanitize$6
 	};
 
 	var invalidInputs = {
@@ -11083,13 +11767,13 @@
 
 	var sentAnotherRequestAfterFinalResponse = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "You previously sent a request with .final=true and now have sent another request whilst the session is shutting down",
 	  code: "error/common/dev/sent-another-request-after-final-response",
@@ -11098,13 +11782,13 @@
 
 	var exception = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "an exception occurred",
 	  code: "error/common/exception",
@@ -11113,13 +11797,13 @@
 
 	var sessionInUse = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "another request is currently in progress on this session",
 	  code: "error/common/session-in-use",
@@ -11128,13 +11812,13 @@
 
 	var sessionTimedOut = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "user took too long to supply login interim inputs",
 	  code: "error/common/session-timed-out",
@@ -11143,13 +11827,13 @@
 
 	var onlineBankingLegalDocumentation = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "This is a new account, internet banking has not been setup properly. FNB requires the user to log in and acknowledge various declarations online.",
 	  code: "error/fnb/online-banking-legal-documentation",
@@ -11158,13 +11842,13 @@
 
 	var statementsDisabled = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "FNB has temporarily removed statements download from their site",
 	  code: "error/fnb/statements-disabled",
@@ -11173,13 +11857,13 @@
 
 	var loggedOff = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "ABSA logged the user off whilst we were logging in",
 	  code: "error/site/abs/logged-off",
@@ -11188,13 +11872,13 @@
 
 	var bankBlocked = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "The bank blocked our query",
 	  code: "error/site/bank-blocked",
@@ -11203,13 +11887,13 @@
 
 	var captcha = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "there is a captcha present - the user must log on and clear the captcha",
 	  code: "error/site/captcha",
@@ -11218,13 +11902,13 @@
 
 	var inputValidationFailed = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "input validation failed",
 	  code: "error/site/input-validation-failed",
@@ -11233,13 +11917,13 @@
 
 	var internal = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "an unexpected error occurred whilst processing the request, please try again later",
 	  code: "error/site/internal",
@@ -11248,13 +11932,13 @@
 
 	var invalidAccount = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "the account number supplied is invalid",
 	  code: "error/site/invalid-account",
@@ -11263,13 +11947,13 @@
 
 	var loginFailed = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "username and or password is incorrect",
 	  code: "error/site/login-failed",
@@ -11278,13 +11962,13 @@
 
 	var noStatementsAvailable = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "There are no statements available for download - is this a new account?",
 	  code: "error/site/no-statements-available",
@@ -11293,13 +11977,13 @@
 
 	var noTransactionsOverPeriod = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "There are no transactions over the past number of days which you selected",
 	  code: "error/site/no-transactions-over-period",
@@ -11308,13 +11992,13 @@
 
 	var okGotIt = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "there is a legal notice present - the user must log on and read and dismiss the notice",
 	  code: "error/site/ok-got-it",
@@ -11323,13 +12007,13 @@
 
 	var siteChangeDetected = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "the bank website has changed, please try again in a few hours",
 	  code: "error/site/site-change-detected",
@@ -11338,13 +12022,13 @@
 
 	var siteMaintenance = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "the bank website has a site maintenance notice active, please try again later",
 	  code: "error/site/site-maintenance",
@@ -11353,13 +12037,13 @@
 
 	var siteUnreachable = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "the bank website is down, please try again later",
 	  code: "error/site/site-unreachable",
@@ -11368,13 +12052,13 @@
 
 	var siteUnresponsive = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "The bank site took too long to respond. Please try again.",
 	  code: "error/site/site-unresponsive",
@@ -11383,13 +12067,13 @@
 
 	var denied = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "User denied our login on their 2FA device",
 	  code: "error/user/denied",
@@ -11398,13 +12082,13 @@
 
 	var tookTooLong = {
 	  // parent
-	  type: noData$1.type,
-	  examples: noData$1.examples,
-	  validate: noData$1.validate,
-	  sanitize: noData$1.sanitize,
-	  noData: noData$1.noData,
-	  passThrough: noData$1.passThrough,
-	  noSessionId: noData$1.noSessionId,
+	  type: noData$5.type,
+	  examples: noData$5.examples,
+	  validate: noData$5.validate,
+	  sanitize: noData$5.sanitize,
+	  noData: noData$5.noData,
+	  passThrough: noData$5.passThrough,
+	  noSessionId: noData$5.noSessionId,
 	  // own
 	  message: "User took too long to authorise",
 	  code: "error/user/took-too-long",
@@ -11490,35 +12174,35 @@
 	var success_6$1 = success$2.validate;
 	var success_7$1 = success$2.sanitize;
 
-	var code$4 = "insurance/fail";
-	var type$5 = enums.TYPES.ERROR;
-	var passThrough$3 = true; // from lambda-gw
+	var code$a = "insurance/fail";
+	var type$9 = enums.TYPES.ERROR;
+	var passThrough$7 = true; // from lambda-gw
 
-	var noData$2 = true;
-	var blame = enums.BLAME.SPIKE; // noData
+	var noData$6 = true;
+	var blame$4 = enums.BLAME.SPIKE; // noData
 
-	var examples$3 = undefined;
-	var validate$6 = undefined;
-	var sanitize$3 = undefined;
+	var examples$9 = undefined;
+	var validate$c = undefined;
+	var sanitize$7 = undefined;
 
 	var fail = {
-		code: code$4,
-		type: type$5,
-		passThrough: passThrough$3,
-		noData: noData$2,
-		blame: blame,
-		examples: examples$3,
-		validate: validate$6,
-		sanitize: sanitize$3
+		code: code$a,
+		type: type$9,
+		passThrough: passThrough$7,
+		noData: noData$6,
+		blame: blame$4,
+		examples: examples$9,
+		validate: validate$c,
+		sanitize: sanitize$7
 	};
 
-	var code$5 = "insurance/success";
-	var type$6 = enums.TYPES.SUCCESS;
-	var noData$3 = false;
-	var passThrough$4 = true; // from lambda-gw
+	var code$b = "insurance/success";
+	var type$a = enums.TYPES.SUCCESS;
+	var noData$7 = false;
+	var passThrough$8 = true; // from lambda-gw
 	//#region examples
 
-	var examples$4 = {
+	var examples$a = {
 	  default: {
 	    parser: "LIBERTY_LIFE_COVER_ANNIVERSARY_LETTER",
 	    name: "CD BUCKLEY",
@@ -11540,7 +12224,7 @@
 	}; //#endregion
 	//#region validate
 
-	var validate$7 = {
+	var validate$d = {
 	  type: "object",
 	  properties: {
 	    parser: {
@@ -11594,32 +12278,32 @@
 	}; //#endregion
 	//#region sanitize
 
-	var sanitize$4 = {
+	var sanitize$8 = {
 	  name: "[redacted]"
 	}; //#endregion
 
 	var success$3 = {
-		code: code$5,
-		type: type$6,
-		noData: noData$3,
-		passThrough: passThrough$4,
-		examples: examples$4,
-		validate: validate$7,
-		sanitize: sanitize$4
+		code: code$b,
+		type: type$a,
+		noData: noData$7,
+		passThrough: passThrough$8,
+		examples: examples$a,
+		validate: validate$d,
+		sanitize: sanitize$8
 	};
 
-	var code$6 = "login/interim-input-abs-pass";
-	var type$7 = enums.TYPES.INTERIM;
-	var noData$4 = false;
-	var passThrough$5 = true; // from lambda-gw
+	var code$c = "login/interim-input-abs-pass";
+	var type$b = enums.TYPES.INTERIM;
+	var noData$8 = false;
+	var passThrough$9 = true; // from lambda-gw
 	//#region examples
 
-	var examples$5 = {
+	var examples$b = {
 	  default: [0, 1, 2]
 	}; //#endregion
 	//#region validate
 
-	var validate$8 = {
+	var validate$e = {
 	  type: "array",
 	  items: {
 	    type: "integer"
@@ -11629,197 +12313,151 @@
 	}; //#endregion
 	//#region sanitize
 
-	var sanitize$5 = undefined; //#endregion
-
-	var interimInputAbsPass = {
-		code: code$6,
-		type: type$7,
-		noData: noData$4,
-		passThrough: passThrough$5,
-		examples: examples$5,
-		validate: validate$8,
-		sanitize: sanitize$5
-	};
-
-	var code$7 = "login/interim-input-std-otp";
-	var type$8 = enums.TYPES.INTERIM;
-	var noData$5 = true;
-	var passThrough$6 = true; // from lambda-gw
-	//#region examples
-	// noData
-
-	var examples$6 = undefined; //#endregion
-	//#region validate
-	// noData
-
-	var validate$9 = undefined; //#endregion
-	//#region sanitize
-
-	var sanitize$6 = undefined; //#endregion
-
-	var interimInputStdOtp = {
-		code: code$7,
-		type: type$8,
-		noData: noData$5,
-		passThrough: passThrough$6,
-		examples: examples$6,
-		validate: validate$9,
-		sanitize: sanitize$6
-	};
-
-	var code$8 = "login-interim-input/success";
-	var type$9 = enums.TYPES.SUCCESS;
-	var noData$6 = true;
-	var passThrough$7 = true; // from lambda-gw
-	// noData
-
-	var examples$7 = undefined;
-	var validate$a = undefined;
-	var sanitize$7 = undefined;
-
-	var success$4 = {
-		code: code$8,
-		type: type$9,
-		noData: noData$6,
-		passThrough: passThrough$7,
-		examples: examples$7,
-		validate: validate$a,
-		sanitize: sanitize$7
-	};
-
-	var code$9 = "login/interim-wait-cap-2fa";
-	var type$a = enums.TYPES.INTERIM;
-	var noData$7 = true;
-	var passThrough$8 = true; // from lambda-gw
-	//#region examples
-	// noData
-
-	var examples$8 = undefined; //#endregion
-	//#region validate
-	// noData
-
-	var validate$b = undefined; //#endregion
-	//#region sanitize
-
-	var sanitize$8 = undefined; //#endregion
-
-	var interimWaitCap2fa = {
-		code: code$9,
-		type: type$a,
-		noData: noData$7,
-		passThrough: passThrough$8,
-		examples: examples$8,
-		validate: validate$b,
-		sanitize: sanitize$8
-	};
-
-	var code$a = "login-interim-wait/success";
-	var type$b = enums.TYPES.SUCCESS;
-	var noData$8 = true;
-	var passThrough$9 = true; // from lambda-gw
-	//#region examples
-	// noData
-
-	var examples$9 = undefined; //#endregion
-	//#region validate
-
-	var validate$c = undefined; //#endregion
-	//#region sanitize
-
 	var sanitize$9 = undefined; //#endregion
 
-	var success$5 = {
-		code: code$a,
+	var interimInputAbsPass = {
+		code: code$c,
 		type: type$b,
 		noData: noData$8,
 		passThrough: passThrough$9,
-		examples: examples$9,
-		validate: validate$c,
+		examples: examples$b,
+		validate: validate$e,
 		sanitize: sanitize$9
 	};
 
-	var code$b = "login/success";
-	var type$c = enums.TYPES.SUCCESS;
+	var code$d = "login/interim-input-std-otp";
+	var type$c = enums.TYPES.INTERIM;
 	var noData$9 = true;
 	var passThrough$a = true; // from lambda-gw
 	//#region examples
 	// noData
 
-	var examples$a = undefined; //#endregion
+	var examples$c = undefined; //#endregion
 	//#region validate
 	// noData
 
-	var validate$d = undefined; //#endregion
+	var validate$f = undefined; //#endregion
 	//#region sanitize
 
 	var sanitize$a = undefined; //#endregion
 
-	var success$6 = {
-		code: code$b,
+	var interimInputStdOtp = {
+		code: code$d,
 		type: type$c,
 		noData: noData$9,
 		passThrough: passThrough$a,
-		examples: examples$a,
-		validate: validate$d,
+		examples: examples$c,
+		validate: validate$f,
 		sanitize: sanitize$a
 	};
 
-	var code$c = "gw-client/nested/breaks";
-	var validate$e = {
-	  id: "/breaks",
-	  // NOTE: must match root.$ref in parent schema
-	  type: "array",
-	  items: {
-	    type: "object",
-	    properties: {
-	      prev_id: {
-	        required: true,
-	        type: "integer"
-	      },
-	      cur_id: {
-	        required: true,
-	        type: "integer"
-	      },
-	      amount: {
-	        required: true,
-	        type: "number"
-	      },
-	      diff: {
-	        required: true,
-	        type: "number"
-	      }
-	    }
-	  }
-	};
-	var examples$b = {
-	  default: [{
-	    prev_id: 1,
-	    cur_id: 2,
-	    amount: -100,
-	    diff: -500
-	  }, {
-	    prev_id: 2,
-	    cur_id: 3,
-	    amount: -500,
-	    diff: 600
-	  }]
+	var code$e = "login-interim-input/success";
+	var type$d = enums.TYPES.SUCCESS;
+	var noData$a = true;
+	var passThrough$b = true; // from lambda-gw
+	// noData
+
+	var examples$d = undefined;
+	var validate$g = undefined;
+	var sanitize$b = undefined;
+
+	var success$4 = {
+		code: code$e,
+		type: type$d,
+		noData: noData$a,
+		passThrough: passThrough$b,
+		examples: examples$d,
+		validate: validate$g,
+		sanitize: sanitize$b
 	};
 
-	var breaks = {
-		code: code$c,
-		validate: validate$e,
-		examples: examples$b
+	var code$f = "login/interim-wait-cap-2fa";
+	var type$e = enums.TYPES.INTERIM;
+	var noData$b = true;
+	var passThrough$c = true; // from lambda-gw
+	//#region examples
+	// noData
+
+	var examples$e = undefined; //#endregion
+	//#region validate
+	// noData
+
+	var validate$h = undefined; //#endregion
+	//#region sanitize
+
+	var sanitize$c = undefined; //#endregion
+
+	var interimWaitCap2fa = {
+		code: code$f,
+		type: type$e,
+		noData: noData$b,
+		passThrough: passThrough$c,
+		examples: examples$e,
+		validate: validate$h,
+		sanitize: sanitize$c
 	};
 
-	var code$d = "gw-client/nested/statement-info";
-	var validate$f = {
+	var code$g = "login-interim-wait/success";
+	var type$f = enums.TYPES.SUCCESS;
+	var noData$c = true;
+	var passThrough$d = true; // from lambda-gw
+	//#region examples
+	// noData
+
+	var examples$f = undefined; //#endregion
+	//#region validate
+
+	var validate$i = undefined; //#endregion
+	//#region sanitize
+
+	var sanitize$d = undefined; //#endregion
+
+	var success$5 = {
+		code: code$g,
+		type: type$f,
+		noData: noData$c,
+		passThrough: passThrough$d,
+		examples: examples$f,
+		validate: validate$i,
+		sanitize: sanitize$d
+	};
+
+	var code$h = "login/success";
+	var type$g = enums.TYPES.SUCCESS;
+	var noData$d = true;
+	var passThrough$e = true; // from lambda-gw
+	//#region examples
+	// noData
+
+	var examples$g = undefined; //#endregion
+	//#region validate
+	// noData
+
+	var validate$j = undefined; //#endregion
+	//#region sanitize
+
+	var sanitize$e = undefined; //#endregion
+
+	var success$6 = {
+		code: code$h,
+		type: type$g,
+		noData: noData$d,
+		passThrough: passThrough$e,
+		examples: examples$g,
+		validate: validate$j,
+		sanitize: sanitize$e
+	};
+
+	var code$i = "gw-client/nested/statement-info";
+	var validate$k = {
 	  id: "/statement-info",
 	  // NOTE: must match root.$ref in parent schema
 	  type: "object",
 	  properties: {
 	    bank: {
 	      required: true,
-	      type: "string"
+	      type: "string",
+	      enum: Object.values(enums.Bank).map(x => x.code)
 	    },
 	    accountNumber: {
 	      required: true,
@@ -11852,12 +12490,16 @@
 	      items: {
 	        type: "string"
 	      }
+	    },
+	    statementBalance: {
+	      required: false,
+	      type: "number"
 	    }
 	  }
 	};
-	var examples$c = {
+	var examples$h = {
 	  default: {
-	    bank: "ABS.0",
+	    bank: "ABS",
 	    accountNumber: "9017446437",
 	    dates: {
 	      issuedOn: "2018-09-02T00:00:00.000Z",
@@ -11867,19 +12509,19 @@
 	    nameAddress: ["Mr. J Smith", "10 Main Road", "Cape Town", "8001"]
 	  }
 	};
-	var sanitize$b = {
+	var sanitize$f = {
 	  nameAddress: "[redacted]"
 	};
 
 	var statementInfo = {
-		code: code$d,
-		validate: validate$f,
-		examples: examples$c,
-		sanitize: sanitize$b
+		code: code$i,
+		validate: validate$k,
+		examples: examples$h,
+		sanitize: sanitize$f
 	};
 
-	var code$e = "gw-client/nested/transaction";
-	var validate$g = {
+	var code$j = "gw-client/nested/transaction";
+	var validate$l = {
 	  id: "/transaction",
 	  // NOTE: must match root.$ref in parent schema
 	  type: "object",
@@ -11910,7 +12552,7 @@
 	    }
 	  }
 	};
-	var examples$d = {
+	var examples$i = {
 	  1: {
 	    id: 1,
 	    date: "2017-09-12T00:00:00.000Z",
@@ -11937,125 +12579,10 @@
 	};
 
 	var transaction = {
-		code: code$e,
-		validate: validate$g,
-		examples: examples$d
+		code: code$j,
+		validate: validate$l,
+		examples: examples$i
 	};
-
-	var code$f = "gw-client/nested/transaction-no-balance";
-	var validate$h = {
-	  id: "/transaction-no-balance",
-	  // NOTE: must match root.$ref in parent schema
-	  type: "object",
-	  properties: {
-	    id: {
-	      required: true,
-	      type: "integer"
-	    },
-	    date: {
-	      required: true,
-	      format: "date-or-iso-str"
-	    },
-	    description: {
-	      required: true,
-	      type: "array",
-	      items: {
-	        type: "string"
-	      }
-	    },
-	    amount: {
-	      required: false,
-	      type: "number"
-	    } // optional: balance brought forward lines have no amount
-
-	  }
-	};
-	var examples$e = {
-	  1: {
-	    id: 1,
-	    date: "2017-09-12T00:00:00.000Z",
-	    description: ["Deposit"],
-	    amount: 1600.01
-	  },
-	  2: {
-	    id: 2,
-	    // note: should be 3 - see breaks
-	    date: "2017-09-12T00:00:00.000Z",
-	    description: ["#Monthly Account Fee"],
-	    amount: -100
-	  },
-	  3: {
-	    id: 3,
-	    // note: should be 2 - see breaks
-	    date: "2017-09-12T00:00:00.000Z",
-	    description: ["Woolworths"],
-	    amount: -500
-	  }
-	};
-
-	var transactionNoBalance = {
-		code: code$f,
-		validate: validate$h,
-		examples: examples$e
-	};
-
-	var nested = createCommonjsModule(function (module, exports) {
-
-	exports.resolve = function (path, arrayOfNestedShapes) {
-
-	  let deps = {
-	    schemas: [],
-	    shapes: []
-	  };
-	  let ok = true;
-
-	  for (let child of arrayOfNestedShapes) {
-	    if (!child.validate) {
-	      log.fatal(`${path}: bad nested deps - child ${child.id} does not have .validate`);
-	      ok = false;
-	    } else {
-	      // check valid nestable shape
-	      if (core.isFunction(child.validate)) {
-	        log.fatal(`${path}: bad nested deps - child has custom function .validate instead of a schema`);
-	        ok = false;
-	      }
-
-	      if (!core.isObject(child.validate)) {
-	        log.fatal(`${path}: bad nested deps - child .validate is not a schema object`);
-	        ok = false;
-	      }
-
-	      if (!child.validate.id) {
-	        log.fatal(`${path}: bad nested deps - child does not have an .id`);
-	        ok = false;
-	      } // child is a valid netsable shape - include it in deps
-
-
-	      deps.schemas.push(child.validate);
-	      deps.shapes.push(child); // now see whether the child has any nested deps
-
-	      let childPath = path + ":" + child.validate.id;
-
-	      if (child.nested) {
-	        let childDeps = exports.resolve(childPath, child.nested);
-
-	        if (childDeps && childDeps.schemas && childDeps.schemas.length) {
-
-	          deps.schemas = deps.schemas.concat(childDeps.schemas);
-	          deps.shapes = deps.shapes.concat(childDeps.shapes);
-	        }
-	      }
-	    }
-	  }
-
-	  if (!ok) {
-	    throw new Error(`${path}: bad nested deps`);
-	  }
-
-	  return deps;
-	};
-	});
-	var nested_1 = nested.resolve;
 
 	var transactions$2 = createCommonjsModule(function (module, exports) {
 	const nested$1 = {
@@ -12087,37 +12614,6 @@
 	var transactions_4$1 = transactions$2.nestedShapes;
 	var transactions_5$1 = transactions$2.nestedSchemas;
 	var transactions_6$1 = transactions$2.examples;
-
-	var transactionsNoBalance = createCommonjsModule(function (module, exports) {
-	const nested$1 = {
-	  "transaction-no-balance": transactionNoBalance
-	};
-	exports.code = "gw-client/nested/transactions-no-balance";
-	exports.validate = {
-	  id: "/transactions-no-balance",
-	  // NOTE: must match root.$ref in parent schema
-	  type: "array",
-	  items: {
-	    $ref: nested$1["transaction-no-balance"].validate.id
-	  }
-	};
-	exports.nested = [nested$1["transaction-no-balance"]];
-	let {
-	  shapes,
-	  schemas
-	} = nested.resolve(exports.validate.id, exports.nested);
-	exports.nestedShapes = shapes;
-	exports.nestedSchemas = schemas;
-	exports.examples = {
-	  default: [nested$1["transaction-no-balance"].examples[1], nested$1["transaction-no-balance"].examples[2], nested$1["transaction-no-balance"].examples[3]]
-	};
-	});
-	var transactionsNoBalance_1 = transactionsNoBalance.code;
-	var transactionsNoBalance_2 = transactionsNoBalance.validate;
-	var transactionsNoBalance_3 = transactionsNoBalance.nested;
-	var transactionsNoBalance_4 = transactionsNoBalance.nestedShapes;
-	var transactionsNoBalance_5 = transactionsNoBalance.nestedSchemas;
-	var transactionsNoBalance_6 = transactionsNoBalance.examples;
 
 	var autoDetect = createCommonjsModule(function (module, exports) {
 	exports.code = "pdf/fail/auto-detect";
@@ -12204,129 +12700,21 @@
 	var autoDetect_10 = autoDetect.validate;
 	var autoDetect_11 = autoDetect.sanitize;
 
-	var code$g = "pdf/fail/failed-to-extract-credit-breakdown";
-	var type$d = enums.TYPES.ERROR;
-	var passThrough$b = true; // from lambda-gw
-
-	var noData$a = true;
-	var blame$1 = enums.BLAME.SPIKE;
-	var noSessionId$2 = true; // shapeExplorer
-
-	var message = "couldn't find the breakdown/overview section in a credit card statement"; // noData
-
-	var examples$f = undefined;
-	var validate$i = undefined;
-	var sanitize$c = undefined;
-
-	var failedToExtractCreditBreakdown = {
-		code: code$g,
-		type: type$d,
-		passThrough: passThrough$b,
-		noData: noData$a,
-		blame: blame$1,
-		noSessionId: noSessionId$2,
-		message: message,
-		examples: examples$f,
-		validate: validate$i,
-		sanitize: sanitize$c
-	};
-
-	var code$h = "pdf/fail/failed-to-extract-statement-date";
-	var type$e = enums.TYPES.ERROR;
-	var passThrough$c = true; // from lambda-gw
-
-	var noData$b = true;
-	var blame$2 = enums.BLAME.SPIKE;
-	var noSessionId$3 = true; // shapeExplorer
-
-	var message$1 = "we need the statement date in order to determine the transaction date in a statement format which excludes the year from any dates"; // noData
-
-	var examples$g = undefined;
-	var validate$j = undefined;
-	var sanitize$d = undefined;
-
-	var failedToExtractStatementDate = {
-		code: code$h,
-		type: type$e,
-		passThrough: passThrough$c,
-		noData: noData$b,
-		blame: blame$2,
-		noSessionId: noSessionId$3,
-		message: message$1,
-		examples: examples$g,
-		validate: validate$j,
-		sanitize: sanitize$d
-	};
-
-	var code$i = "pdf/fail/file-not-found";
-	var type$f = enums.TYPES.ERROR;
-	var passThrough$d = true; // from lambda-gw
-
-	var noData$c = true;
-	var blame$3 = enums.BLAME.SPIKE;
-	var noSessionId$4 = true; // shapeExplorer
-
-	var message$2 = "internal error"; // noData
-
-	var examples$h = undefined;
-	var validate$k = undefined;
-	var sanitize$e = undefined;
-
-	var fileNotFound = {
-		code: code$i,
-		type: type$f,
-		passThrough: passThrough$d,
-		noData: noData$c,
-		blame: blame$3,
-		noSessionId: noSessionId$4,
-		message: message$2,
-		examples: examples$h,
-		validate: validate$k,
-		sanitize: sanitize$e
-	};
-
-	var code$j = "pdf/fail/image-pdf";
-	var type$g = enums.TYPES.ERROR;
-	var passThrough$e = true; // from lambda-gw
-
-	var noData$d = true;
-	var blame$4 = enums.BLAME.USER;
-	var noSessionId$5 = true; // shapeExplorer
-
-	var message$3 = "PDF is image based not text based, and hence can't be parsed"; // noData
-
-	var examples$i = undefined;
-	var validate$l = undefined;
-	var sanitize$f = undefined;
-
-	var imagePdf = {
-		code: code$j,
-		type: type$g,
-		passThrough: passThrough$e,
-		noData: noData$d,
-		blame: blame$4,
-		noSessionId: noSessionId$5,
-		message: message$3,
-		examples: examples$i,
-		validate: validate$l,
-		sanitize: sanitize$f
-	};
-
-	var code$k = "pdf/fail/image-pdf-with-ocr";
+	var code$k = "pdf/fail/failed-to-extract-credit-breakdown";
 	var type$h = enums.TYPES.ERROR;
 	var passThrough$f = true; // from lambda-gw
 
 	var noData$e = true;
-	var blame$5 = enums.BLAME.USER;
+	var blame$5 = enums.BLAME.SPIKE;
 	var noSessionId$6 = true; // shapeExplorer
 
-	var message$4 = "PDF contains a scanned image with OCR text, and hence can't be parsed"; // noData
+	var message$4 = "couldn't find the breakdown/overview section in a credit card statement"; // noData
 
 	var examples$j = undefined;
 	var validate$m = undefined;
 	var sanitize$g = undefined;
 
-	var imagePdfWithOcr = {
+	var failedToExtractCreditBreakdown = {
 		code: code$k,
 		type: type$h,
 		passThrough: passThrough$f,
@@ -12339,7 +12727,7 @@
 		sanitize: sanitize$g
 	};
 
-	var code$l = "pdf/fail/invalid-data-extracted";
+	var code$l = "pdf/fail/failed-to-extract-statement-date";
 	var type$i = enums.TYPES.ERROR;
 	var passThrough$g = true; // from lambda-gw
 
@@ -12347,13 +12735,13 @@
 	var blame$6 = enums.BLAME.SPIKE;
 	var noSessionId$7 = true; // shapeExplorer
 
-	var message$5 = "we successfully extract the data from the statement however it did not conform to the expected output schema"; // noData
+	var message$5 = "we need the statement date in order to determine the transaction date in a statement format which excludes the year from any dates"; // noData
 
 	var examples$k = undefined;
 	var validate$n = undefined;
 	var sanitize$h = undefined;
 
-	var invalidDataExtracted = {
+	var failedToExtractStatementDate = {
 		code: code$l,
 		type: type$i,
 		passThrough: passThrough$g,
@@ -12366,7 +12754,7 @@
 		sanitize: sanitize$h
 	};
 
-	var code$m = "pdf/fail/invalid-pdf-exception";
+	var code$m = "pdf/fail/file-not-found";
 	var type$j = enums.TYPES.ERROR;
 	var passThrough$h = true; // from lambda-gw
 
@@ -12374,13 +12762,13 @@
 	var blame$7 = enums.BLAME.SPIKE;
 	var noSessionId$8 = true; // shapeExplorer
 
-	var message$6 = "the pdf does not have a valid structure"; // noData
+	var message$6 = "internal error"; // noData
 
 	var examples$l = undefined;
 	var validate$o = undefined;
 	var sanitize$i = undefined;
 
-	var invalidPdfException = {
+	var fileNotFound = {
 		code: code$m,
 		type: type$j,
 		passThrough: passThrough$h,
@@ -12393,21 +12781,21 @@
 		sanitize: sanitize$i
 	};
 
-	var code$n = "pdf/fail/multiple-matching-parsers";
+	var code$n = "pdf/fail/image-pdf";
 	var type$k = enums.TYPES.ERROR;
 	var passThrough$i = true; // from lambda-gw
 
 	var noData$h = true;
-	var blame$8 = enums.BLAME.SPIKE;
+	var blame$8 = enums.BLAME.USER;
 	var noSessionId$9 = true; // shapeExplorer
 
-	var message$7 = "two or more parsers were found which can process this pdf"; // noData
+	var message$7 = "PDF is image based not text based, and hence can't be parsed"; // noData
 
 	var examples$m = undefined;
 	var validate$p = undefined;
 	var sanitize$j = undefined;
 
-	var multipleMatchingParsers = {
+	var imagePdf = {
 		code: code$n,
 		type: type$k,
 		passThrough: passThrough$i,
@@ -12420,7 +12808,7 @@
 		sanitize: sanitize$j
 	};
 
-	var code$o = "pdf/fail/password-incorrect";
+	var code$o = "pdf/fail/image-pdf-with-ocr";
 	var type$l = enums.TYPES.ERROR;
 	var passThrough$j = true; // from lambda-gw
 
@@ -12428,13 +12816,13 @@
 	var blame$9 = enums.BLAME.USER;
 	var noSessionId$a = true; // shapeExplorer
 
-	var message$8 = "the password which you supplied failed to decrypt the pdf"; // noData
+	var message$8 = "PDF contains a scanned image with OCR text, and hence can't be parsed"; // noData
 
 	var examples$n = undefined;
 	var validate$q = undefined;
 	var sanitize$k = undefined;
 
-	var passwordIncorrect = {
+	var imagePdfWithOcr = {
 		code: code$o,
 		type: type$l,
 		passThrough: passThrough$j,
@@ -12447,21 +12835,21 @@
 		sanitize: sanitize$k
 	};
 
-	var code$p = "pdf/fail/password-required";
+	var code$p = "pdf/fail/invalid-data-extracted";
 	var type$m = enums.TYPES.ERROR;
 	var passThrough$k = true; // from lambda-gw
 
 	var noData$j = true;
-	var blame$a = enums.BLAME.USER;
+	var blame$a = enums.BLAME.SPIKE;
 	var noSessionId$b = true; // shapeExplorer
 
-	var message$9 = "the password which you supplied is encrypted - you must supply a password"; // noData
+	var message$9 = "we successfully extract the data from the statement however it did not conform to the expected output schema"; // noData
 
 	var examples$o = undefined;
 	var validate$r = undefined;
 	var sanitize$l = undefined;
 
-	var passwordRequired = {
+	var invalidDataExtracted$1 = {
 		code: code$p,
 		type: type$m,
 		passThrough: passThrough$k,
@@ -12474,7 +12862,7 @@
 		sanitize: sanitize$l
 	};
 
-	var code$q = "pdf/fail/pdf-js-error";
+	var code$q = "pdf/fail/invalid-pdf-exception";
 	var type$n = enums.TYPES.ERROR;
 	var passThrough$l = true; // from lambda-gw
 
@@ -12482,13 +12870,13 @@
 	var blame$b = enums.BLAME.SPIKE;
 	var noSessionId$c = true; // shapeExplorer
 
-	var message$a = "internal error"; // noData
+	var message$a = "the pdf does not have a valid structure"; // noData
 
 	var examples$p = undefined;
 	var validate$s = undefined;
 	var sanitize$m = undefined;
 
-	var pdfJsError = {
+	var invalidPdfException = {
 		code: code$q,
 		type: type$n,
 		passThrough: passThrough$l,
@@ -12501,7 +12889,7 @@
 		sanitize: sanitize$m
 	};
 
-	var code$r = "pdf/fail/pdf-js-exception";
+	var code$r = "pdf/fail/multiple-matching-parsers";
 	var type$o = enums.TYPES.ERROR;
 	var passThrough$m = true; // from lambda-gw
 
@@ -12509,13 +12897,13 @@
 	var blame$c = enums.BLAME.SPIKE;
 	var noSessionId$d = true; // shapeExplorer
 
-	var message$b = "internal error"; // noData
+	var message$b = "two or more parsers were found which can process this pdf"; // noData
 
 	var examples$q = undefined;
 	var validate$t = undefined;
 	var sanitize$n = undefined;
 
-	var pdfJsException = {
+	var multipleMatchingParsers$1 = {
 		code: code$r,
 		type: type$o,
 		passThrough: passThrough$m,
@@ -12528,21 +12916,21 @@
 		sanitize: sanitize$n
 	};
 
-	var code$s = "pdf/fail/pdf-read-exception";
+	var code$s = "pdf/fail/password-incorrect";
 	var type$p = enums.TYPES.ERROR;
 	var passThrough$n = true; // from lambda-gw
 
 	var noData$m = true;
-	var blame$d = enums.BLAME.SPIKE;
+	var blame$d = enums.BLAME.USER;
 	var noSessionId$e = true; // shapeExplorer
 
-	var message$c = "internal error"; // noData
+	var message$c = "the password which you supplied failed to decrypt the pdf"; // noData
 
 	var examples$r = undefined;
 	var validate$u = undefined;
 	var sanitize$o = undefined;
 
-	var pdfReadException = {
+	var passwordIncorrect = {
 		code: code$s,
 		type: type$p,
 		passThrough: passThrough$n,
@@ -12555,21 +12943,21 @@
 		sanitize: sanitize$o
 	};
 
-	var code$t = "pdf/fail/unknown-exception";
+	var code$t = "pdf/fail/password-required";
 	var type$q = enums.TYPES.ERROR;
 	var passThrough$o = true; // from lambda-gw
 
 	var noData$n = true;
-	var blame$e = enums.BLAME.SPIKE;
+	var blame$e = enums.BLAME.USER;
 	var noSessionId$f = true; // shapeExplorer
 
-	var message$d = "an unspecified exception ocurred"; // noData
+	var message$d = "the password which you supplied is encrypted - you must supply a password"; // noData
 
 	var examples$s = undefined;
 	var validate$v = undefined;
 	var sanitize$p = undefined;
 
-	var unknownException = {
+	var passwordRequired = {
 		code: code$t,
 		type: type$q,
 		passThrough: passThrough$o,
@@ -12582,7 +12970,7 @@
 		sanitize: sanitize$p
 	};
 
-	var code$u = "pdf/fail/unknown-pdf";
+	var code$u = "pdf/fail/pdf-js-error";
 	var type$r = enums.TYPES.ERROR;
 	var passThrough$p = true; // from lambda-gw
 
@@ -12590,13 +12978,13 @@
 	var blame$f = enums.BLAME.SPIKE;
 	var noSessionId$g = true; // shapeExplorer
 
-	var message$e = "we did not recognise this pdf format"; // noData
+	var message$e = "internal error"; // noData
 
 	var examples$t = undefined;
 	var validate$w = undefined;
 	var sanitize$q = undefined;
 
-	var unknownPdf = {
+	var pdfJsError = {
 		code: code$u,
 		type: type$r,
 		passThrough: passThrough$p,
@@ -12607,6 +12995,114 @@
 		examples: examples$t,
 		validate: validate$w,
 		sanitize: sanitize$q
+	};
+
+	var code$v = "pdf/fail/pdf-js-exception";
+	var type$s = enums.TYPES.ERROR;
+	var passThrough$q = true; // from lambda-gw
+
+	var noData$p = true;
+	var blame$g = enums.BLAME.SPIKE;
+	var noSessionId$h = true; // shapeExplorer
+
+	var message$f = "internal error"; // noData
+
+	var examples$u = undefined;
+	var validate$x = undefined;
+	var sanitize$r = undefined;
+
+	var pdfJsException = {
+		code: code$v,
+		type: type$s,
+		passThrough: passThrough$q,
+		noData: noData$p,
+		blame: blame$g,
+		noSessionId: noSessionId$h,
+		message: message$f,
+		examples: examples$u,
+		validate: validate$x,
+		sanitize: sanitize$r
+	};
+
+	var code$w = "pdf/fail/pdf-read-exception";
+	var type$t = enums.TYPES.ERROR;
+	var passThrough$r = true; // from lambda-gw
+
+	var noData$q = true;
+	var blame$h = enums.BLAME.SPIKE;
+	var noSessionId$i = true; // shapeExplorer
+
+	var message$g = "internal error"; // noData
+
+	var examples$v = undefined;
+	var validate$y = undefined;
+	var sanitize$s = undefined;
+
+	var pdfReadException = {
+		code: code$w,
+		type: type$t,
+		passThrough: passThrough$r,
+		noData: noData$q,
+		blame: blame$h,
+		noSessionId: noSessionId$i,
+		message: message$g,
+		examples: examples$v,
+		validate: validate$y,
+		sanitize: sanitize$s
+	};
+
+	var code$x = "pdf/fail/unknown-exception";
+	var type$u = enums.TYPES.ERROR;
+	var passThrough$s = true; // from lambda-gw
+
+	var noData$r = true;
+	var blame$i = enums.BLAME.SPIKE;
+	var noSessionId$j = true; // shapeExplorer
+
+	var message$h = "an unspecified exception ocurred"; // noData
+
+	var examples$w = undefined;
+	var validate$z = undefined;
+	var sanitize$t = undefined;
+
+	var unknownException$1 = {
+		code: code$x,
+		type: type$u,
+		passThrough: passThrough$s,
+		noData: noData$r,
+		blame: blame$i,
+		noSessionId: noSessionId$j,
+		message: message$h,
+		examples: examples$w,
+		validate: validate$z,
+		sanitize: sanitize$t
+	};
+
+	var code$y = "pdf/fail/unknown-pdf";
+	var type$v = enums.TYPES.ERROR;
+	var passThrough$t = true; // from lambda-gw
+
+	var noData$s = true;
+	var blame$j = enums.BLAME.SPIKE;
+	var noSessionId$k = true; // shapeExplorer
+
+	var message$i = "we did not recognise this pdf format"; // noData
+
+	var examples$x = undefined;
+	var validate$A = undefined;
+	var sanitize$u = undefined;
+
+	var unknownPdf = {
+		code: code$y,
+		type: type$v,
+		passThrough: passThrough$t,
+		noData: noData$s,
+		blame: blame$j,
+		noSessionId: noSessionId$k,
+		message: message$i,
+		examples: examples$x,
+		validate: validate$A,
+		sanitize: sanitize$u
 	};
 
 	var bankStatementNormal = createCommonjsModule(function (module, exports) {
@@ -12704,35 +13200,35 @@
 	  // - "pdf/success/bank-statement-normal"
 	  "bank-statement-normal": bankStatementNormal
 	};
-	var code$v = "pdf/success/bank-statement-normal";
-	var type$s = enums.TYPES.SUCCESS;
-	var passThrough$q = true; // from lambda-gw
+	var code$z = "pdf/success/bank-statement-normal";
+	var type$w = enums.TYPES.SUCCESS;
+	var passThrough$u = true; // from lambda-gw
 
-	var noSessionId$h = true; // shapeExplorer
+	var noSessionId$l = true; // shapeExplorer
 	//#region examples
 
-	var examples$u = nested$1["bank-statement-normal"].examples; //#endregion
+	var examples$y = nested$1["bank-statement-normal"].examples; //#endregion
 	//#region validate
 
-	var validate$x = nested$1["bank-statement-normal"].validate;
+	var validate$B = nested$1["bank-statement-normal"].validate;
 	var nested_1$1 = nested$1["bank-statement-normal"].nested;
 	var nestedShapes = nested$1["bank-statement-normal"].nestedShapes;
 	var nestedSchemas = nested$1["bank-statement-normal"].nestedSchemas; //#endregion
 	//#region sanitize
 
-	var sanitize$r = nested$1["bank-statement-normal"].sanitize; //#endregion
+	var sanitize$v = nested$1["bank-statement-normal"].sanitize; //#endregion
 
 	var bankStatementNormal_1$1 = {
-		code: code$v,
-		type: type$s,
-		passThrough: passThrough$q,
-		noSessionId: noSessionId$h,
-		examples: examples$u,
-		validate: validate$x,
+		code: code$z,
+		type: type$w,
+		passThrough: passThrough$u,
+		noSessionId: noSessionId$l,
+		examples: examples$y,
+		validate: validate$B,
 		nested: nested_1$1,
 		nestedShapes: nestedShapes,
 		nestedSchemas: nestedSchemas,
-		sanitize: sanitize$r
+		sanitize: sanitize$v
 	};
 
 	var bankStatementNoBalance = createCommonjsModule(function (module, exports) {
@@ -12811,45 +13307,45 @@
 	  // - "pdf/success/credit-card-simple"
 	  "bank-statement-no-balance": bankStatementNoBalance
 	};
-	var code$w = "pdf/success/bank-statement-no-balance";
-	var type$t = enums.TYPES.SUCCESS;
-	var passThrough$r = true; // from lambda-gw
+	var code$A = "pdf/success/bank-statement-no-balance";
+	var type$x = enums.TYPES.SUCCESS;
+	var passThrough$v = true; // from lambda-gw
 
-	var noSessionId$i = true; // shapeExplorer
+	var noSessionId$m = true; // shapeExplorer
 	//#region examples
 
-	var examples$v = nested$2["bank-statement-no-balance"].examples; //#endregion
+	var examples$z = nested$2["bank-statement-no-balance"].examples; //#endregion
 	//#region validate
 
-	var validate$y = nested$2["bank-statement-no-balance"].validate;
+	var validate$C = nested$2["bank-statement-no-balance"].validate;
 	var nested_1$2 = nested$2["bank-statement-no-balance"].nested;
 	var nestedShapes$1 = nested$2["bank-statement-no-balance"].nestedShapes;
 	var nestedSchemas$1 = nested$2["bank-statement-no-balance"].nestedSchemas; //#endregion
 	//#region sanitize
 
-	var sanitize$s = nested$2["bank-statement-no-balance"].sanitize; //#endregion
+	var sanitize$w = nested$2["bank-statement-no-balance"].sanitize; //#endregion
 
 	var bankStatementNoBalance_1$1 = {
-		code: code$w,
-		type: type$t,
-		passThrough: passThrough$r,
-		noSessionId: noSessionId$i,
-		examples: examples$v,
-		validate: validate$y,
+		code: code$A,
+		type: type$x,
+		passThrough: passThrough$v,
+		noSessionId: noSessionId$m,
+		examples: examples$z,
+		validate: validate$C,
 		nested: nested_1$2,
 		nestedShapes: nestedShapes$1,
 		nestedSchemas: nestedSchemas$1,
-		sanitize: sanitize$s
+		sanitize: sanitize$w
 	};
 
-	var code$x = "pdf/success/credit-card-breakdown";
-	var type$u = enums.TYPES.SUCCESS;
-	var passThrough$s = true; // from lambda-gw
+	var code$B = "pdf/success/credit-card-breakdown";
+	var type$y = enums.TYPES.SUCCESS;
+	var passThrough$w = true; // from lambda-gw
 
-	var noSessionId$j = true; // shapeExplorer
+	var noSessionId$n = true; // shapeExplorer
 	//#region examples
 
-	var examples$w = {
+	var examples$A = {
 	  valid: {
 	    parser: "ABSA_CREDITCARD_EMAIL_0",
 	    statement: {
@@ -12915,7 +13411,7 @@
 	}; //#endregion
 	//#region validate
 
-	var validate$z = {
+	var validate$D = {
 	  id: "/credit-card-breakdown",
 	  type: "object",
 	  properties: {
@@ -13060,7 +13556,7 @@
 	}; //#endregion
 	//#region sanitize
 
-	var sanitize$t = {
+	var sanitize$x = {
 	  statement: {
 	    nameAddress: "[redacted]" // remove name
 
@@ -13068,13 +13564,13 @@
 	}; //#endregion
 
 	var creditCardBreakdown = {
-		code: code$x,
-		type: type$u,
-		passThrough: passThrough$s,
-		noSessionId: noSessionId$j,
-		examples: examples$w,
-		validate: validate$z,
-		sanitize: sanitize$t
+		code: code$B,
+		type: type$y,
+		passThrough: passThrough$w,
+		noSessionId: noSessionId$n,
+		examples: examples$A,
+		validate: validate$D,
+		sanitize: sanitize$x
 	};
 
 	var creditCardBreakdownMultiUser_1 = createCommonjsModule(function (module, exports) {
@@ -13180,44 +13676,44 @@
 	    }
 	  }
 	});
-	var code$y = "pdf/success/credit-card-simple";
-	var type$v = enums.TYPES.SUCCESS;
-	var passThrough$t = true; // from lambda-gw
+	var code$C = "pdf/success/credit-card-simple";
+	var type$z = enums.TYPES.SUCCESS;
+	var passThrough$x = true; // from lambda-gw
 
-	var noSessionId$k = true; // shapeExplorer
+	var noSessionId$o = true; // shapeExplorer
 	//#region examples
 
-	var examples$x = creditCardSimple.examples; //#endregion
+	var examples$B = creditCardSimple.examples; //#endregion
 	//#region validate
 
-	var validate$A = creditCardSimple.validate;
+	var validate$E = creditCardSimple.validate;
 	var nested$3 = creditCardSimple.nested;
 	var nestedShapes$2 = creditCardSimple.nestedShapes;
 	var nestedSchemas$2 = creditCardSimple.nestedSchemas; //#endregion
 	//#region sanitize
 
-	var sanitize$u = creditCardSimple.sanitize; //#endregion
+	var sanitize$y = creditCardSimple.sanitize; //#endregion
 
 	var creditCardSimple_1 = {
-		code: code$y,
-		type: type$v,
-		passThrough: passThrough$t,
-		noSessionId: noSessionId$k,
-		examples: examples$x,
-		validate: validate$A,
+		code: code$C,
+		type: type$z,
+		passThrough: passThrough$x,
+		noSessionId: noSessionId$o,
+		examples: examples$B,
+		validate: validate$E,
 		nested: nested$3,
 		nestedShapes: nestedShapes$2,
 		nestedSchemas: nestedSchemas$2,
-		sanitize: sanitize$u
+		sanitize: sanitize$y
 	};
 
-	var code$z = "sars/success/payroll-taxes";
-	var type$w = enums.TYPES.SUCCESS;
-	var noData$p = false;
-	var passThrough$u = true; // from lambda-gw
+	var code$D = "sars/success/payroll-taxes";
+	var type$A = enums.TYPES.SUCCESS;
+	var noData$t = false;
+	var passThrough$y = true; // from lambda-gw
 	//#region examples
 
-	var examples$y = {
+	var examples$C = {
 	  default: {
 	    parser: "SARS_PAYROLLTAXES_WEB_0",
 	    statement: {
@@ -13271,7 +13767,7 @@
 	}; //#endregion
 	//#region validate
 
-	var validate$B = {
+	var validate$F = {
 	  type: "object",
 	  properties: {
 	    parser: {
@@ -13368,20 +13864,20 @@
 	}; //#endregion
 	//#region sanitize
 
-	var sanitize$v = {
+	var sanitize$z = {
 	  statement: {
 	    nameAddress: "[redacted]"
 	  }
 	}; //#endregion
 
 	var payrollTaxes = {
-		code: code$z,
-		type: type$w,
-		noData: noData$p,
-		passThrough: passThrough$u,
-		examples: examples$y,
-		validate: validate$B,
-		sanitize: sanitize$v
+		code: code$D,
+		type: type$A,
+		noData: noData$t,
+		passThrough: passThrough$y,
+		examples: examples$C,
+		validate: validate$F,
+		sanitize: sanitize$z
 	};
 
 	var add_id = function (transactions) {
@@ -13406,7 +13902,7 @@
 	  }
 	};
 
-	var validate$C = function (requestId, transactions, filename) {
+	var validate$G = function (requestId, transactions, filename) {
 	  if (!transactions.length) {
 	    // NOTE: this fatal will fire on /pdf as well as /transactions requests when:
 	    //  /pdf = statement has no transactions (is probably an error)
@@ -13469,7 +13965,7 @@
 	var common = {
 		add_id: add_id,
 		remove_id: remove_id,
-		validate: validate$C
+		validate: validate$G
 	};
 
 	var success$7 = createCommonjsModule(function (module, exports) {
@@ -13574,6 +14070,8 @@
 
 
 	 // client-gw
+
+
 
 
 
@@ -13729,6 +14227,16 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
 	 // const gwClientWrapper = require("./gw-client/wrapper"); // remove circular dep: shape -> wrapper -> common -> shape
 
 
@@ -13739,6 +14247,7 @@
 	  // client-gw
 	  "client-gw/accounts": accounts$1,
 	  "client-gw/close": close$1,
+	  "client-gw/csv": csv$1,
 	  "client-gw/estatement": estatement$1,
 	  "client-gw/login": login$1,
 	  "client-gw/login-interim-input/abs-pass": absPass,
@@ -13750,6 +14259,11 @@
 	  // gw-client
 	  "gw-client/accounts/success": success,
 	  "gw-client/close/success": success$1,
+	  "gw-client/csv/fail/invalid-data-extracted": invalidDataExtracted,
+	  "gw-client/csv/fail/multiple-matching-parsers": multipleMatchingParsers,
+	  "gw-client/csv/fail/unknown-csv": unknownCsv,
+	  "gw-client/csv/fail/unknown-exception": unknownException,
+	  "gw-client/csv/success/bank-statement": bankStatement,
 	  "gw-client/error/common/access/exceeded-max-concurrent-requests": exceededMaxConcurrentRequests,
 	  "gw-client/error/common/access/insufficient-credit": insufficientCredit,
 	  "gw-client/error/common/dev/authorization": authorization,
@@ -13798,15 +14312,15 @@
 	  "gw-client/pdf/fail/file-not-found": fileNotFound,
 	  "gw-client/pdf/fail/image-pdf": imagePdf,
 	  "gw-client/pdf/fail/image-pdf-with-ocr": imagePdfWithOcr,
-	  "gw-client/pdf/fail/invalid-data-extracted": invalidDataExtracted,
+	  "gw-client/pdf/fail/invalid-data-extracted": invalidDataExtracted$1,
 	  "gw-client/pdf/fail/invalid-pdf-exception": invalidPdfException,
-	  "gw-client/pdf/fail/multiple-matching-parsers": multipleMatchingParsers,
+	  "gw-client/pdf/fail/multiple-matching-parsers": multipleMatchingParsers$1,
 	  "gw-client/pdf/fail/password-incorrect": passwordIncorrect,
 	  "gw-client/pdf/fail/password-required": passwordRequired,
 	  "gw-client/pdf/fail/pdf-js-error": pdfJsError,
 	  "gw-client/pdf/fail/pdf-js-exception": pdfJsException,
 	  "gw-client/pdf/fail/pdf-read-exception": pdfReadException,
-	  "gw-client/pdf/fail/unknown-exception": unknownException,
+	  "gw-client/pdf/fail/unknown-exception": unknownException$1,
 	  "gw-client/pdf/fail/unknown-pdf": unknownPdf,
 	  "gw-client/pdf/success/bank-statement-normal": bankStatementNormal_1$1,
 	  "gw-client/pdf/success/bank-statement-no-balance": bankStatementNoBalance_1$1,
@@ -14163,45 +14677,6 @@
 	var wrapper_8 = wrapper.validate;
 	var wrapper_9 = wrapper.sanitize;
 	var wrapper_10 = wrapper.log;
-
-	var _function = {
-	  accounts,
-	  estatement,
-	  login,
-	  "login-interim-input": loginInterimInput,
-	  "login-interim-wait": loginInterimWait,
-	  statements,
-	  transactions,
-	  close,
-	  pdf,
-	  check: function (func) {
-	    if (this[func]) {
-	      return true;
-	    } else {
-	      let funcs = Object.keys(this).filter(x => x !== "check").join("\n");
-	      console.error(`invalid function, valid options = \n${funcs}`);
-	      return false;
-	    }
-	  }
-	};
-
-	const server = "http://localhost:3000";
-	const state = {
-	  url: {
-	    // web
-	    accounts: server + _function["accounts"].url,
-	    estatement: server + _function["estatement"].url,
-	    login: server + _function["login"].url,
-	    "login-interim-input": server + _function["login-interim-input"].url,
-	    "login-interim-wait": server + _function["login-interim-wait"].url,
-	    statements: server + _function["statements"].url,
-	    transactions: server + _function["transactions"].url,
-	    close: server + _function["close"].url,
-	    // pdf
-	    pdf: server + _function["pdf"].url
-	  }
-	};
-	var _static = state;
 
 	var bind = function bind(fn, thisArg) {
 	  return function wrap() {
@@ -15685,6 +16160,14 @@
 	  return await shared$1.request(APIKEY, USERKEY, url, inputs);
 	};
 
+	var csv$2 = async function (APIKEY, USERKEY, csvPath, buffer = undefined) {
+	  // inputs
+	  let inputs = shapes.getShape("client-gw/csv").create(csvPath, buffer); // request
+
+	  let url = _static.url.csv;
+	  return await shared$1.request(APIKEY, USERKEY, url, inputs);
+	};
+
 	var estatement$2 = async function (APIKEY, USERKEY, sessionId, final, accountNumber, numDays) {
 	  // inputs
 	  let inputs = shapes.getShape("client-gw/estatement").create(sessionId, final, accountNumber, numDays); // throws InputValidationError
@@ -15756,8 +16239,8 @@
 	  return await shared$1.request(APIKEY, USERKEY, url, inputs);
 	};
 
-	// api
 	var module = {
+	  config: _static,
 	  // api
 	  shape: shapes.shape,
 	  getShape: shapes.getShape,
@@ -15786,6 +16269,7 @@
 	  // wrappers
 	  accounts: accounts$2,
 	  close: close$2,
+	  csv: csv$2,
 	  estatement: estatement$2,
 	  loginInterimInputAbsPass: absPass$1,
 	  loginInterimInputStdOtp: stdOtp$1,
@@ -15800,4 +16284,4 @@
 	return module;
 
 })));
-//# sourceMappingURL=spike-api.umd.js.map
+//# sourceMappingURL=spike-api.umd.mjs.map
