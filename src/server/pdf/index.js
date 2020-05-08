@@ -1,4 +1,4 @@
-const SpikeApi = require("@spikedata/api");
+const SpikeApi = require("@spike/api");
 const { APIKEY, USERKEY } = require("../config");
 
 module.exports = async (req, res) => {

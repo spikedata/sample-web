@@ -128,6 +128,7 @@ const _pass = undefined; // change this if you have a password protected pdf
 
   async function uploadPdf(i, file, base64Txt) {
     console.log(`${i} ${file.name}`);
+    output(`sending ${file.name} to https://api-v6.spikedata.co.za/pdf ...`);
     let res = await pdf(file.name, _pass, base64Txt);
     output(res);
   }
